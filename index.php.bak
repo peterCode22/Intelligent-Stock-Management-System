@@ -1,0 +1,156 @@
+<?php
+// Initialize the session
+session_start();
+ 
+// Include config file
+require_once "config.php";
+ 
+// Define variables and initialize with empty values
+$username = $password = "";
+$username_err = $password_err = $login_err = "";
+ 
+// Processing form data when form is submitted
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+	// Check if the user is already logged in, if no then redirect to login page
+	if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+		$newBasketEntry = array($POST["ProductName"], $POST["quant"]);
+		$_SESSION["basket"] = $newBasketEntry;
+		header("location: login.php");
+		exit;
+	}
+	else{
+		header("location: basket.php");
+		exit;
+	}
+}
+
+
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        .wrapper{
+            width: 600px;
+            margin: 0 auto;
+        }
+        table tr td:last-child{
+            width: 120px;
+        }
+		input[type='number']{
+			width: 70px;
+		} 
+		a[id='login'] {
+			font-size: 30px;
+			position:absolute;
+			top:0;
+			right:0;
+			margin-right: 20px;
+			margin-top: 10px;
+		}
+		
+		a[id='logout'] {
+			font-size: 30px;
+			position:absolute;
+			top:0;
+			right:0;
+			margin-right: 20px;
+			margin-top: 10px;
+		}
+		
+		a[id='basket'] {
+			font-size: 30px;
+			position:absolute;
+			top:0;
+			left:0;
+			margin-left: 20px;
+			margin-top: 10px;
+		}
+
+
+    </style>
+    <script>
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();   
+        });
+    </script>
+</head>
+<body>
+	<?php
+	if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+		echo '<a href="login.php" id = "login">Login</a>';
+	}
+	else{
+		echo '<a href="logout.php" id = "logout">Log out</a>';
+	}
+	?>
+	<a href="basket.php" id = 'basket'>Basket</a>
+    <div class="wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mt-5 mb-3 clearfix">
+                        <h2 class="pull-left">Products </h2>
+                    </div>
+					
+                    <?php
+                    // Include config file
+                    require_once "config.php";
+                    
+                    // Attempt select query execution
+                    $sql = "SELECT ProdName, RetailPrice, PriceUnit, Quantity FROM products WHERE Quantity > 0";
+                    if($result = $mysqli->query($sql)){
+                        if($result->num_rows > 0){
+                            echo '<table class="table table-bordered table-striped">';
+                                echo "<thead>";
+                                    echo "<tr>";
+                                        echo "<th>Name</th>";
+                                        echo "<th>Price</th>";
+										echo "<th>Unit</th>";
+                                    echo "</tr>";
+                                echo "</thead>";
+                                echo "<tbody>";
+                                while($row = $result->fetch_array()){
+									$tempQuant = $row['Quantity'];
+                                    echo "<tr>";
+                                        echo "<td>" . $row['ProdName'] . "</td>";
+                                        echo "<td> £" . $row['RetailPrice'] . "</td>";
+										echo "<td> per " . $row['PriceUnit'] . "</td>";
+										echo "<td>";
+											echo "<form name = basketAdd method=post>
+													<input type=number min=1 max=" . $tempQuant . " id=quant class=form-control required>
+													<input type=hidden name=productName value=" . $row['ProdName'] . " >
+													<button type=submit name=addToBasket>Add to basket</button>
+													</form>";
+                                        echo "</td>";
+                                    echo "</tr>";
+                                }
+                                echo "</tbody>";                            
+                            echo "</table>";
+                            // Free result set
+                            $result->free();
+                        } else{
+                            echo '<div class="alert alert-danger"><em>No records were found.</em></div>';
+                        }
+                    } else{
+                        echo "Oops! Something went wrong. Please try again later.";
+                    }
+                    
+                    // Close connection
+                    $mysqli->close();
+                    ?>
+                </div>
+            </div>        
+        </div>
+    </div>
+</body>
+</html>

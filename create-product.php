@@ -19,9 +19,9 @@ if (!isset($_SESSION["acc_type"]) || $_SESSION["acc_type"] !== 'admin') {
 }
 
 // Define variables and initialize with empty values
-$prodName = $prodType = $priceUnit = "";
-$lifeTime = $retailPrice = $supplierPrice = 0;
-$prodNameErr = $prodTypeErr = $priceUnitErr = $lifeTimeErr = $retailPriceErr = $supplierPriceErr = "";
+$prodName = "";
+$retailPrice = $supplierPrice = 0;
+$prodNameErr = $retailPriceErr = $supplierPriceErr = "";
  
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -31,26 +31,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $name_err = "Please enter a name.";
     } else{
         $prodName = $inputName;
-    }
-    
-    // Validate product type
-    $inputProdType = trim($_POST["prType"]);
-    if (empty($inputProdType)){
-        $prodTypeErr = "Please enter a product type (Ambient, Chilled etc.)";
-    }else if(!filter_var($inputProdType, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
-        $prodTypeErr = "Please enter a valid product type.";
-    } else{
-        $prodType = $inputProdType;
-    }
-
-    // Validate lifetime
-    $inputLTime = trim($_POST["lTime"]);
-    if (empty($inputLTime)){
-        $lifeTimeErr = "Please enter a product's life time.";
-    } else if(!ctype_digit($inputLTime) && $inputLTime == 0){
-        $lifeTimeErr = "Please enter a positive integer value.";
-    } else{
-        $lifeTime = $inputLTime;
     }
 
     // Validate retail price
@@ -72,26 +52,15 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     } else{
         $supplierPrice = $inputSPrice;
     }
-
-    // Validate price unit
-    $inputUnit = trim($_POST["prUnit"]);
-    if (empty($inputUnit)){
-        $priceUnitErr = "Please enter a price unit (per kilogram, per piece etc.)";
-    }else if(!filter_var($inputUnit, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
-        $priceUnitErr = "Please enter a valid product type.";
-    } else{
-        $priceUnit = $inputUnit;
-    }
     
     // Check input errors before inserting in database
-    if(empty($prodNameErr) && empty($prodTypeErr) && empty($priceUnitErr) && empty($lifeTimeErr)
-     && empty($retailPriceErr) && empty($supplierPriceErr)){
+    if(empty($prodNameErr) && empty($retailPriceErr) && empty($supplierPriceErr)){
         // Prepare an insert statement
-        $sql = "INSERT INTO products (ProdName, ProdType, Lifetime, RetailPrice, SupplierPrice, PriceUnit) VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO products (ProdName, RetailPrice, SupplierPrice) VALUES (?, ?, ?)";
  
         if($stmt = $mysqli->prepare($sql)){
             // Bind variables to the prepared statement as parameters
-            $stmt->bind_param("ssidds", $prodName, $prodType, $lifeTime, $retailPrice, $supplierPrice, $priceUnit);
+            $stmt->bind_param("sdd", $prodName, $retailPrice, $supplierPrice);
             
             // Attempt to execute the prepared statement
             if($stmt->execute()){
@@ -174,16 +143,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                             <span class="invalid-feedback"><?php echo $prodNameErr;?></span>
                         </div>
                         <div class="form-group">
-                            <label>Product Type</label>
-                            <textarea name="prType" class="form-control <?php echo (!empty($prodTypeErr)) ? 'is-invalid' : ''; ?>"><?php echo $prodType; ?></textarea>
-                            <span class="invalid-feedback"><?php echo $prodTypeErr;?></span>
-                        </div>
-                        <div class="form-group">
-                            <label>Life time (Days)</label>
-                            <input type="text" name="lTime" class="form-control <?php echo (!empty($lifeTimeErr)) ? 'is-invalid' : ''; ?>" value="<?php echo $lifeTime; ?>">
-                            <span class="invalid-feedback"><?php echo $lifeTimeErr;?></span>
-                        </div>
-                        <div class="form-group">
                             <label>Retail Price</label>
                             <input type="text" name="rPrice" class="form-control <?php echo (!empty($retailPriceErr)) ? 'is-invalid' : ''; ?>" value="<?php echo $retailPrice; ?>">
                             <span class="invalid-feedback"><?php echo $retailPriceErr;?></span>
@@ -192,11 +151,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                             <label>Supplier Price</label>
                             <input type="text" name="supPrice" class="form-control <?php echo (!empty($supplierPriceErr)) ? 'is-invalid' : ''; ?>" value="<?php echo $supplierPrice; ?>">
                             <span class="invalid-feedback"><?php echo $supplierPriceErr;?></span>
-                        </div>
-                        <div class="form-group">
-                            <label>Price Unit</label>
-                            <textarea name="prUnit" class="form-control <?php echo (!empty($priceUnitErr)) ? 'is-invalid' : ''; ?>"><?php echo $priceUnit; ?></textarea>
-                            <span class="invalid-feedback"><?php echo $priceUnitErr;?></span>
                         </div>
                         <input type="submit" class="btn btn-primary" value="Submit">
                         <a href="product-management.php" class="btn btn-secondary ml-2">Return</a>

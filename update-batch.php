@@ -88,7 +88,6 @@ if(isset($_POST["bid"]) && !empty($_POST["bid"])){
                       contains only one row, we don't need to use while loop */
                       $row = $result->fetch_array(MYSQLI_ASSOC);
 
-                      $expTime = $row['Expirytime'];
                       $productID = $row['ProdID'];
                   } else{
                       // URL doesn't contain valid id. Redirect to error page
@@ -169,7 +168,7 @@ if(isset($_POST["bid"]) && !empty($_POST["bid"])){
             <div class="row">
                 <div class="col-md-12">
                     <h2 class="mt-5">Update Batch</h2>
-                    <p>Update the batch quantity of product ID ( <?php echo $productID; ?> ) that expires on <?php echo date("d/m/Y H:i", strtotime($expTime)); ?>.</p>
+                    <p>Update the batch quantity of product ID ( <?php echo $productID; ?> ).</p>
                     <form action="<?php echo htmlspecialchars(basename($_SERVER['REQUEST_URI'])); ?>" method="post">
                         <div class="form-group">
                             <label>Quantity</label>

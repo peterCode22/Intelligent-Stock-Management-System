@@ -158,10 +158,7 @@ a[id='adminOrder'] {
                                     echo "<tr>";
                                         echo "<th>Product ID</th>";
                                         echo "<th>Product Name</th>";
-                                        echo "<th>Type</th>";
-                                        echo "<th>Life time (Days)</th>";
                                         echo "<th>Supplier Price</th>";
-                                        echo "<th>Price Unit</th>";
                                     echo "</tr>";
                                 echo "</thead>";
                                 echo "<tbody>";
@@ -169,10 +166,7 @@ a[id='adminOrder'] {
                                     echo "<tr>";
                                         echo "<td>" . $row['ProdID'] . "</td>";
                                         echo "<td>" . $row['ProdName'] . "</td>";
-                                        echo "<td>" . $row['ProdType'] . "</td>";
-                                        echo "<td>" . $row['Lifetime'] . "</td>";
                                         echo "<td> £" . number_format((float)$row['SupplierPrice'], 2, '.', '') . "</td>";                                        
-										echo "<td> per " . $row['PriceUnit'] . "</td>";
 										echo "<td>";
 											echo "<form name = orderAdd method=post>
 												<input type=number min=1 name=quant class=form-control required>

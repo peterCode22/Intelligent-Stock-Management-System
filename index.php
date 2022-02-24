@@ -187,7 +187,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                     echo "<tr>";
                                         echo "<th>Name</th>";
                                         echo "<th>Price</th>";
-										echo "<th>Unit</th>";
                                     echo "</tr>";
                                 echo "</thead>";
                                 echo "<tbody>";
@@ -196,7 +195,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                     echo "<tr>";
                                         echo "<td>" . $row['ProdName'] . "</td>";
                                         echo "<td> £" . number_format((float)$row['RetailPrice'], 2, '.', '') . "</td>";                                        
-										echo "<td> per " . $row['PriceUnit'] . "</td>";
 										echo "<td>";
 											echo "<form name = basketAdd method=post>
 												<input type=number min=1 max=" . $tempQuant . " name=quant class=form-control required>

@@ -82,38 +82,18 @@ if (!isset($_SESSION["acc_type"]) || $_SESSION["acc_type"] !== 'admin') {
                               echo '<tr style="background-color:#c9dfca">';
                                     echo "<th>Product ID</th>";
                                     echo "<th>Product Name</th>";
-                                    echo "<th>Type</th>";
-                                    echo "<th>Life time (Days)</th>";
                                     echo "<th>Retail Price</th>";
                                     echo "<th>Supplier Price</th>";
-                                    echo "<th>Price Unit</th>";
                                     echo '<th>Edit / Delete Product <a href="create-product.php" class="btn btn-success pull-right"><i class="fa fa-plus"></i> Add New Product</a> </th>';
                             echo "</tr>";
                         echo "</thead>";
                         echo "<tbody>";
                         while ($row = $result->fetch_array()) {
-                            switch($row['ProdType']) {
-                            case 'Ambient':
-                                $style = 'background-color:#ffe0bd';
-                                break;
-                            case 'Chilled':
-                                $style = 'background-color:#a5e2ff';
-                                break;
-                            case 'Frozen':
-                                $style = 'background-color:#4a8cff';
-                                break;
-                            default :
-                                $style = 'background-color:#ffe0bd';
-                                break;
-                            }
-                            echo '<tr style=' . $style . '>';
+                            echo '<tr>';
                                 echo "<td>" . $row['ProdID'] . "</td>";
                                 echo "<td>" . $row['ProdName'] . "</td>";
-                                echo "<td>" . $row['ProdType'] . "</td>";
-                                echo "<td>" . $row['Lifetime'] . "</td>";
                                 echo "<td>" . $row['RetailPrice'] . "</td>";
                                 echo "<td>" . $row['SupplierPrice'] . "</td>";
-                                echo "<td>" . $row['PriceUnit'] . "</td>";
                                 echo "<td>";
                                     echo '<a href="update-product.php?id=' . $row['ProdID'] . '" title="Edit Product" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
                                     echo '  ';

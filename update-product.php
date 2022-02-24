@@ -18,9 +18,9 @@ if (!isset($_SESSION["acc_type"]) || $_SESSION["acc_type"] !== 'admin') {
 }
 
 // Define variables and initialize with empty values
-$prodName = $prodType = $priceUnit = "";
-$lifeTime = $retailPrice = $supplierPrice = 0;
-$prodNameErr = $prodTypeErr = $priceUnitErr = $lifeTimeErr = $retailPriceErr = $supplierPriceErr = "";
+$prodName = "";
+$retailPrice = $supplierPrice = 0;
+$prodNameErr = $retailPriceErr = $supplierPriceErr = "";
  
 // Processing form data when form is submitted
 if(isset($_POST["pid"]) && !empty($_POST["pid"])){
@@ -48,62 +48,6 @@ if(isset($_POST["pid"]) && !empty($_POST["pid"])){
             }
         }
         $stmt->close();
-    }
-
-    
-    // Validate product type
-    if (!empty($_POST["prType"])){
-        $prodType = trim($_POST["prType"]);
-        if(!filter_var($prodType, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
-            $prodTypeErr = "Please enter a valid type.";
-        } else{
-            $sql = "UPDATE products SET ProdType = ? WHERE ProdID = ?";
-            if($stmt = $mysqli->prepare($sql)){
-                // Bind variables to the prepared statement as parameters
-                $stmt->bind_param("si", $paramType, $paramPID);
-                
-                // Set parameters
-                $paramType = $prodType;
-                $paramPID = $pid;
-                
-                // Attempt to execute the prepared statement
-                if($stmt->execute()){
-                    // Records updated successfully. 
-                } else{
-                    header("location: error.php");
-                    exit();
-                }
-            }
-            $stmt->close();
-        }
-    }
-    
-    // Validate lifetime
-    if (!empty($_POST["lTime"])){
-        $inputLifeTime = trim($_POST["lTime"]);
-        if(!ctype_digit($inputLifeTime) && $inputLifeTime == 0){
-            $lifeTimeErr = "Please enter a positive integer value.";
-        } else{
-            $lifeTime = $inputLifeTime;
-            $sql = "UPDATE products SET Lifetime = ? WHERE ProdID = ?";
-            if($stmt = $mysqli->prepare($sql)){
-                // Bind variables to the prepared statement as parameters
-                $stmt->bind_param("ii", $paramLTime, $paramPID);
-                
-                // Set parameters
-                $paramLTime = $lifeTime;
-                $paramPID = $pid;
-                
-                // Attempt to execute the prepared statement
-                if($stmt->execute()){
-                    // Records updated successfully. 
-                } else{
-                    header("location: error.php");
-                    exit();
-                }
-            }
-            $stmt->close();
-        }
     }
 
     // Validate retail price
@@ -162,32 +106,6 @@ if(isset($_POST["pid"]) && !empty($_POST["pid"])){
         }
     }
 
-    // Validate price unit
-    if (!empty($_POST["prUnit"])){
-        $priceUnit = trim($_POST["prUnit"]);
-        if(!filter_var($priceUnit, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
-            $priceUnitErr = "Please enter a valid price unit.";
-        } else{
-            $sql = "UPDATE products SET PriceUnit = ? WHERE ProdID = ?";
-            if($stmt = $mysqli->prepare($sql)){
-                // Bind variables to the prepared statement as parameters
-                $stmt->bind_param("si", $paramUnit, $paramPID);
-                
-                // Set parameters
-                $paramUnit = $priceUnit;
-                $paramPID = $pid;
-                
-                // Attempt to execute the prepared statement
-                if($stmt->execute()){
-                    // Records updated successfully. 
-                } else{
-                    header("location: error.php");
-                    exit();
-                }
-            }
-        $stmt->close();
-        }
-    }
 
 
 } else{
@@ -307,36 +225,16 @@ if(isset($_POST["pid"]) && !empty($_POST["pid"])){
                               echo '<tr style="background-color:#c9dfca">';
                                     echo "<th>Product ID</th>";
                                     echo "<th>Product Name</th>";
-                                    echo "<th>Type</th>";
-                                    echo "<th>Life time (Days)</th>";
                                     echo "<th>Retail Price</th>";
                                     echo "<th>Supplier Price</th>";
-                                    echo "<th>Price Unit</th>";
                             echo "</tr>";
                         echo "</thead>";
                         echo "<tbody>";
-                            switch($row['ProdType']) {
-                            case 'Ambient':
-                                $style = 'background-color:#ffe0bd';
-                                break;
-                            case 'Chilled':
-                                $style = 'background-color:#a5e2ff';
-                                break;
-                            case 'Frozen':
-                                $style = 'background-color:#4a8cff';
-                                break;
-                            default :
-                                $style = 'background-color:#ffe0bd';
-                                break;
-                            }
                             echo '<tr style=' . $style . '>';
                                 echo "<td>" . $row['ProdID'] . "</td>";
                                 echo "<td>" . $row['ProdName'] . "</td>";
-                                echo "<td>" . $row['ProdType'] . "</td>";
-                                echo "<td>" . $row['Lifetime'] . "</td>";
                                 echo "<td>" . $row['RetailPrice'] . "</td>";
                                 echo "<td>" . $row['SupplierPrice'] . "</td>";
-                                echo "<td>" . $row['PriceUnit'] . "</td>";
                             echo "</tr>";
                         echo "</tbody>";
                     echo "</table>";
@@ -350,17 +248,7 @@ if(isset($_POST["pid"]) && !empty($_POST["pid"])){
                             <label>Product Name</label>
                             <input type="text" name="prName" class="form-control <?php echo (!empty($prodNameErr)) ? 'is-invalid' : ''; ?>" value="<?php echo $prodName; ?>">
                             <span class="invalid-feedback"><?php echo $prodNameErr;?></span>
-                        </div>
-                        <div class="form-group">
-                            <label>Product Type</label>
-                            <textarea name="prType" class="form-control <?php echo (!empty($prodTypeErr)) ? 'is-invalid' : ''; ?>"><?php echo $prodType; ?></textarea>
-                            <span class="invalid-feedback"><?php echo $prodTypeErr;?></span>
-                        </div>
-                        <div class="form-group">
-                            <label>Life time (Days)</label>
-                            <input type="text" name="lTime" class="form-control <?php echo (!empty($lifeTimeErr)) ? 'is-invalid' : ''; ?>" value="<?php echo $lifeTime; ?>">
-                            <span class="invalid-feedback"><?php echo $lifeTimeErr;?></span>
-                        </div>
+                        </div>                    
                         <div class="form-group">
                             <label>Retail Price</label>
                             <input type="text" name="rPrice" class="form-control <?php echo (!empty($retailPriceErr)) ? 'is-invalid' : ''; ?>" value="<?php echo $retailPrice; ?>">
@@ -370,12 +258,7 @@ if(isset($_POST["pid"]) && !empty($_POST["pid"])){
                             <label>Supplier Price</label>
                             <input type="text" name="supPrice" class="form-control <?php echo (!empty($supplierPriceErr)) ? 'is-invalid' : ''; ?>" value="<?php echo $supplierPrice; ?>">
                             <span class="invalid-feedback"><?php echo $supplierPriceErr;?></span>
-                        </div>
-                        <div class="form-group">
-                            <label>Price Unit</label>
-                            <textarea name="prUnit" class="form-control <?php echo (!empty($priceUnitErr)) ? 'is-invalid' : ''; ?>"><?php echo $priceUnit; ?></textarea>
-                            <span class="invalid-feedback"><?php echo $priceUnitErr;?></span>
-                        </div>
+                        </div>                        
                         <input type="hidden" name="pid" value="<?php echo $pid; ?>"/>
                         <input type="submit" class="btn btn-primary" value="Submit">
                         <a href="product-management.php" class="btn btn-secondary ml-2">Return</a>

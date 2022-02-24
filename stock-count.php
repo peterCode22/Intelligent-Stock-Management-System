@@ -74,7 +74,7 @@ if (!isset($_SESSION["acc_type"]) || $_SESSION["acc_type"] !== 'admin') {
         <p>
             <?php
             // Attempt select query execution
-            $sql = "SELECT BatchID, batches.ProdID, ProdName, batches.Quantity, Expirytime, PriceUnit FROM batches INNER JOIN products ON products.ProdID = batches.ProdID";
+            $sql = "SELECT BatchID, batches.ProdID, ProdName, batches.Quantity FROM batches INNER JOIN products ON products.ProdID = batches.ProdID";
             if ($result = $mysqli->query($sql)) {
                 if ($result->num_rows > 0) {
                     echo '<table class="table table-bordered table-striped">';
@@ -84,26 +84,16 @@ if (!isset($_SESSION["acc_type"]) || $_SESSION["acc_type"] !== 'admin') {
                                 echo "<th>Product ID</th>";
                                 echo "<th>Product Name</th>";
                                 echo "<th>Quantity</th>";
-                                echo "<th>Expiry Date</th>";
                                 echo "<th>Edit / Delete batch</th>";
                             echo "</tr>";
                         echo "</thead>";
                         echo "<tbody>";
                         while ($row = $result->fetch_array()) {
-                            $unixStamp = strtotime($row['Expirytime']);
-                            $expTime = date("j F Y", $unixStamp);
-                            $tempNow = strtotime("now");
-                            if ($tempNow < $unixStamp) {
-                                $style = 'background-color:#FFFFFF';
-                            } else {
-                                $style = 'background-color:#cc0000';
-                            }
-                            echo '<tr style=' . $style . '>';
+                            echo '<tr>';
                                 echo "<td>" . $row['BatchID'] . "</td>";
                                 echo "<td>" . $row['ProdID'] . "</td>";
-                                echo "<td>" . $row['ProdName'] . " (" . $row['PriceUnit'] . ") </td>";
+                                echo "<td>" . $row['ProdName'] . "</td>";
                                 echo "<td>" . $row['Quantity'] . "</td>";
-                                echo "<td>" . $expTime . "</td>";
                                 echo "<td>";
                                     echo '<a href="update-batch.php?id=' . $row['BatchID'] . '" title="Change Batch" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
                                     echo "  ";

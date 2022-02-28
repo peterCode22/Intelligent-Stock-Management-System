@@ -73,6 +73,7 @@ if (!isset($_SESSION["acc_type"]) || $_SESSION["acc_type"] !== 'admin') {
     <div style="padding-left:16px">
         <p>
             <?php
+            echo shell_exec("python bpnn.py");
             // Attempt select query execution
             $sql = "SELECT * FROM products";
             if ($result = $mysqli->query($sql)) {
@@ -92,8 +93,8 @@ if (!isset($_SESSION["acc_type"]) || $_SESSION["acc_type"] !== 'admin') {
                             echo '<tr>';
                                 echo "<td>" . $row['ProdID'] . "</td>";
                                 echo "<td>" . $row['ProdName'] . "</td>";
-                                echo "<td>" . $row['RetailPrice'] . "</td>";
-                                echo "<td>" . $row['SupplierPrice'] . "</td>";
+                                echo "<td>£" . number_format((float)$row['RetailPrice'], 2, '.', '') . "</td>";
+                                echo "<td>£" .  number_format((float)$row['SupplierPrice'], 2, '.', '') . "</td>";
                                 echo "<td>";
                                     echo '<a href="update-product.php?id=' . $row['ProdID'] . '" title="Edit Product" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
                                     echo '  ';

@@ -8,6 +8,7 @@ import pandas as pd
 import datetime
 from pickle import dump, load
 from sklearn.preprocessing import StandardScaler
+import math
 
 #Extracting current data
 conn = dbCon.connect(host="localhost", user="root", password="cqX*5gk6^hvNFPvE", database="dsp")
@@ -50,3 +51,23 @@ prediction = NN.predict(X)
 prediction = prediction.reshape(-1,1)
 prediction = scalerY.inverse_transform(prediction)
 
+#Go through all products
+allProducts = prodDF['Product']
+diffProd = {} #Dictionary of products and difference in their predicted quantity vs actual
+
+index = 0
+for prod in allProducts:
+    desiredQuantity = math.ceil(prediction[index])
+    if currData['ProdID'].isin([prod])[0]:
+        currQuantity = currData[currData['ProdID'] == prod]['Quantity'][0]
+        if currQuantity < desiredQuantity:
+            diffProd[prod] = int(desiredQuantity - currQuantity)
+        else:
+            diffProd[prod] = 0
+    else:
+        diffProd[prod] = int(desiredQuantity)
+    index = index + 1
+
+import json
+
+print(json.dumps(diffProd))

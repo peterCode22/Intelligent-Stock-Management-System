@@ -124,6 +124,15 @@ a[id='adminOrder'] {
 	margin-top: 10px;
 }
 
+a[id='autoOrder'] {
+	font-size: 30px;
+	position:absolute;
+	top:0;
+	left:0;
+	margin-left: 20px;
+	margin-top: 10px;
+}
+
 </style>
 </head>
 <body>
@@ -139,8 +148,6 @@ a[id='adminOrder'] {
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
-                    <h2 class="mt-5">Place an order.</h2>
-                    <p>Please fill this form and submit to order stock.</p>
                     
                     <?php
                     // Include config file
@@ -148,7 +155,13 @@ a[id='adminOrder'] {
                     echo '<a href="admin-order.php" id = "adminOrder">
                         <button class="loginButton">Order summary</button> 
                         </a>';
-                    
+                    echo '<a href="auto-order.php" id = "autoOrder">
+                        <button class="loginButton">Suggested order</button> 
+                        </a>';
+                    echo '<br>';
+                    echo '<h2 class="mt-5">Place an order.</h2>
+                    <p>Please fill this form and submit to order stock.</p>';
+
                     // Attempt select query execution
                     $sql = "SELECT * FROM products";
                     if($result = $mysqli->query($sql)){

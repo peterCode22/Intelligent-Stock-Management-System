@@ -16,32 +16,31 @@ if($_SESSION["acc_type"] !== 'admin'){
 
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
-    if(isset($_POST['productID'])){
-        if(isset($_POST['newQuant'])){
-            if (($key = array_search($_POST['productID'], array_column($_SESSION['adminOrder'], 'ProdID'))) !== false){
-                $oldQuant = $_SESSION['adminOrder'][$key]['Quantity'];
-                $_SESSION['adminOrder'][$key]['Quantity'] = $_POST['newQuant'];
-                $_SESSION['adminOrder'][$key]['Value'] = $_SESSION['adminOrder'][$key]['Quantity'] * $_SESSION['adminOrder'][$key]['Price'];
-                if ($_POST['newQuant'] >= $oldQuant){
-                    $_SESSION['orderValue'] += ($_POST['newQuant'] - $oldQuant) * $_SESSION['adminOrder'][$key]['Price'];
-                } else{
-                    $_SESSION['orderValue'] -= ($oldQuant - $_POST['newQuant']) * $_SESSION['adminOrder'][$key]['Price'];
-                }
-                header("location: admin-order.php");
-                exit;
+    if(isset($_POST['productID']) && isset($_POST['newQuant'])){
+        if (($key = array_search($_POST['productID'], array_column($_SESSION['adminOrder'], 'ProdID'))) !== false){
+            $oldQuant = $_SESSION['adminOrder'][$key]['Quantity'];
+            $_SESSION['adminOrder'][$key]['Quantity'] = $_POST['newQuant'];
+            $_SESSION['adminOrder'][$key]['Value'] = $_SESSION['adminOrder'][$key]['Quantity'] * $_SESSION['adminOrder'][$key]['Price'];
+            if ($_POST['newQuant'] >= $oldQuant){
+                $_SESSION['orderValue'] += ($_POST['newQuant'] - $oldQuant) * $_SESSION['adminOrder'][$key]['Price'];
+            } else{
+                $_SESSION['orderValue'] -= ($oldQuant - $_POST['newQuant']) * $_SESSION['adminOrder'][$key]['Price'];
             }
+            header("location: admin-order.php");
+            exit;
         }
-        else{
-            if (($key = array_search($_POST['productID'], array_column($_SESSION['adminOrder'], 'ProdID'))) !== false){
-                $oldQuant = $_SESSION['adminOrder'][$key]['Quantity'];
-                $_SESSION['orderValue'] -= $oldQuant * $_SESSION['adminOrder'][$key]['Price'];
-                unset($_SESSION['adminOrder'][$key]);
-                header("location: admin-order.php");
-                exit;
-            }
+    }
+    else{
+        if (($key = array_search($_POST['prodID'], array_column($_SESSION['adminOrder'], 'ProdID'))) !== false){
+            $oldQuant = $_SESSION['adminOrder'][$key]['Quantity'];
+            $_SESSION['orderValue'] -= $oldQuant * $_SESSION['adminOrder'][$key]['Price'];
+            unset($_SESSION['adminOrder'][$key]);
+            header("location: admin-order.php");
+            exit;
         }
     }
 }
+
 
 
 ?>
@@ -194,8 +193,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                         <input type=number min=1 name=newQuant style="display: inline;"class=form-control required>
                                         <input type=hidden name=productID value=' . $data['ProdID'] . ' >                                
                                         <button type=submit name=changeQuantity>Change quantity</button>
-                                        </form>' . '<form action="' . $_SERVER['PHP_SELF'] . '"name="orderDelete" method="post">
-                                        <input type=hidden name=productID value=' . $data['ProdID'] . ' >
+                                        </form>';
+                                    echo '<form action="' . $_SERVER['PHP_SELF'] . '"name="orderDelete" method="post">
+                                        <input type=hidden name=prodID value=' . $data['ProdID'] . ' >
                                         <button type=submit name=orderDelSubmit>Delete item</button>
                                         </form>';
                                 echo '</td>';

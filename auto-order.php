@@ -32,14 +32,16 @@ if($result = $mysqli->query($sql)){
             $tempID = $row['ProdID'];
             $tempPred = $prediction[$tempID];
 
-            $newOrderEntry = array(
-                'ProdID'=>$tempID,
-                'ProdName'=>$row['ProdName'],
-                'Quantity'=>$tempPred,
-                'Price'=>$row['SupplierPrice'],
-                'Value'=>$row['SupplierPrice'] * $tempPred);
-            $_SESSION['adminOrder'][] = $newOrderEntry;
-            $_SESSION['orderValue'] += $newOrderEntry['Value'];
+            if ($tempPred > 0) {
+                $newOrderEntry = array(
+                    'ProdID'=>$tempID,
+                    'ProdName'=>$row['ProdName'],
+                    'Quantity'=>$tempPred,
+                    'Price'=>$row['SupplierPrice'],
+                    'Value'=>$row['SupplierPrice'] * $tempPred);
+                $_SESSION['adminOrder'][] = $newOrderEntry;
+                $_SESSION['orderValue'] += $newOrderEntry['Value'];
+            }
         }   
         $result->free();
     } else{
@@ -47,6 +49,12 @@ if($result = $mysqli->query($sql)){
     }
 } else{
     echo "Oops! Something went wrong. Please try again later.";
+}
+
+if (empty($_SESSION['adminOrder'])){
+    $_SESSION['noSugg'] = True;
+    header("location: stock-order.php");
+    exit;
 }
 
 // Close connection

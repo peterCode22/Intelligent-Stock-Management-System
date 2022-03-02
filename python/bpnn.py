@@ -58,8 +58,8 @@ diffProd = {} #Dictionary of products and difference in their predicted quantity
 index = 0
 for prod in allProducts:
     desiredQuantity = math.ceil(prediction[index])
-    if currData['ProdID'].isin([prod])[0]:
-        currQuantity = currData[currData['ProdID'] == prod]['Quantity'][0]
+    if currData.iloc[index]['ProdID'] == prod:
+        currQuantity = currData[currData['ProdID'] == prod]['Quantity'].values[0]
         if currQuantity < desiredQuantity:
             diffProd[prod] = int(desiredQuantity - currQuantity)
         else:

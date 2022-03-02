@@ -20,6 +20,12 @@ if(isset($_SESSION['adminOrderPlaced'])){
     unset($_SESSION['adminOrderPlaced']);
 }
 
+if(isset($_SESSION['noSugg'])){
+    $message = "Current stock levels match the predictions.";
+    echo "<script type='text/javascript'>alert('$message');</script>";
+    unset($_SESSION['noSugg']);
+}
+
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
     $searched = $_POST['productID'];

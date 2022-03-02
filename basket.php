@@ -17,7 +17,9 @@ if($_SESSION["acc_type"] !== 'customer'){
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
     if(isset($_POST['productID'])){
+        $_POST['productID'] = intval($_POST['productID']);
         if(isset($_POST['newQuant'])){
+            $_POST['newQuant'] = intval($_POST['newQuant']);
             if (($key = array_search($_POST['productID'], array_column($_SESSION['basket'], 'ProdID'))) !== false){
                 $oldQuant = $_SESSION['basket'][$key]['Quantity'];
                 $_SESSION['basket'][$key]['Quantity'] = $_POST['newQuant'];
@@ -27,8 +29,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 } else{
                     $_SESSION['basketValue'] -= ($oldQuant - $_POST['newQuant']) * $_SESSION['basket'][$key]['Price'];
                 }
-                header("location: basket.php");
-                exit;
             }
         }
         else{
@@ -36,8 +36,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 $oldQuant = $_SESSION['basket'][$key]['Quantity'];
                 $_SESSION['basketValue'] -= $oldQuant * $_SESSION['basket'][$key]['Price'];
                 unset($_SESSION['basket'][$key]);
-                header("location: basket.php");
-                exit;
+                $_SESSION['basket'] = array_values($_SESSION['basket']);
             }
         }
     }
@@ -164,7 +163,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <h1 class="my-5">Hi, <b><?php echo htmlspecialchars($_SESSION["username"]); ?></b>.
         <?php 
             if(isset($_SESSION['basket'])){
-                if ($_SESSION['basketValue'] > 0){
+                if (!empty($_SESSION['basket'])){
                     echo 'Your current basket:</h1>';
                     // Include config file
                     require_once "config.php";

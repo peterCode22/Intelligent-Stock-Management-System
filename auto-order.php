@@ -34,11 +34,11 @@ if($result = $mysqli->query($sql)){
 
             if ($tempPred > 0) {
                 $newOrderEntry = array(
-                    'ProdID'=>$tempID,
+                    'ProdID'=>intval($tempID),
                     'ProdName'=>$row['ProdName'],
-                    'Quantity'=>$tempPred,
-                    'Price'=>$row['SupplierPrice'],
-                    'Value'=>$row['SupplierPrice'] * $tempPred);
+                    'Quantity'=>intval($tempPred),
+                    'Price'=>floatval($row['SupplierPrice']),
+                    'Value'=>floatval($row['SupplierPrice']) * $tempPred);
                 $_SESSION['adminOrder'][] = $newOrderEntry;
                 $_SESSION['orderValue'] += $newOrderEntry['Value'];
             }

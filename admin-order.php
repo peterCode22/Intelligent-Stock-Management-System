@@ -17,6 +17,8 @@ if($_SESSION["acc_type"] !== 'admin'){
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
     if(isset($_POST['productID']) && isset($_POST['newQuant'])){
+        $_POST['productID'] = intval($_POST['productID']);
+        $_POST['newQuant'] = intval($_POST['newQuant']);
         if (($key = array_search($_POST['productID'], array_column($_SESSION['adminOrder'], 'ProdID'))) !== false){
             $oldQuant = $_SESSION['adminOrder'][$key]['Quantity'];
             $_SESSION['adminOrder'][$key]['Quantity'] = $_POST['newQuant'];
@@ -26,17 +28,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             } else{
                 $_SESSION['orderValue'] -= ($oldQuant - $_POST['newQuant']) * $_SESSION['adminOrder'][$key]['Price'];
             }
-            header("location: admin-order.php");
-            exit;
         }
     }
-    else{
-        if (($key = array_search($_POST['prodID'], array_column($_SESSION['adminOrder'], 'ProdID'))) !== false){
+    else if(isset($_POST['prodID'])){
+        $_POST['prodID'] = intval($_POST['prodID']);
+        $key = array_search($_POST['prodID'], array_column($_SESSION['adminOrder'], 'ProdID'));
+        if ($key !== false){
             $oldQuant = $_SESSION['adminOrder'][$key]['Quantity'];
             $_SESSION['orderValue'] -= $oldQuant * $_SESSION['adminOrder'][$key]['Price'];
             unset($_SESSION['adminOrder'][$key]);
-            header("location: admin-order.php");
-            exit;
+            $_SESSION['adminOrder'] = array_values($_SESSION['adminOrder']);
         }
     }
 }
@@ -166,7 +167,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 </div>
     <?php
             if(isset($_SESSION['adminOrder'])){
-                if ($_SESSION['orderValue'] > 0){
+                if (!empty($_SESSION['adminOrder'])){
                     echo '<h1>Your current order:</h1>';
                     // Include config file
                     require_once "config.php";
@@ -182,6 +183,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         echo "</thead>";
                         echo "<tbody>";
                         foreach ($_SESSION['adminOrder'] as $data) {
+                            if ($data['Quantity'] > 0){
                             echo "<tr>";
                                 echo '<td>' . $data['ProdName'] . '</td>';
                                 echo '<td>' . $data['Quantity'] . '</td>';
@@ -203,6 +205,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                     echo '£' . number_format((float)$data['Value'], 2, '.', '');
                                 echo '</td>';
                             echo "</tr>";
+                            }
                         }
                         echo "</tbody>";
                     echo "</table>";

@@ -13,6 +13,9 @@ if(isset($_SESSION['orderPlaced'])){
 
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
+    $_POST['productID'] = intval($_POST['productID']);
+    $_POST['quant'] = intval($_POST['quant']);
+    $_POST['productPrice'] = floatval($_POST['productPrice']);
     $searched = $_POST['productID'];
     if (!isset($_SESSION['basket'])){
         $_SESSION['basket'] = array();

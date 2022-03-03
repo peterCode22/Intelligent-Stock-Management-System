@@ -68,12 +68,12 @@ if (!isset($_SESSION["acc_type"]) || $_SESSION["acc_type"] !== 'admin') {
         <a href="sales.php">Sales summary</a>
         <a class="active" href="product-management.php">Product management</a>
         <a href="stock-order.php">Order stock</a>
+        <a href="pred-config.php">Prediction settings</a>
     </div>
 
     <div style="padding-left:16px">
         <p>
             <?php
-            echo shell_exec("python bpnn.py");
             // Attempt select query execution
             $sql = "SELECT * FROM products";
             if ($result = $mysqli->query($sql)) {

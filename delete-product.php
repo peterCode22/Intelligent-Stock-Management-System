@@ -145,6 +145,7 @@ if(isset($_POST["pid"]) && !empty($_POST["pid"])){
         <a href="sales.php">Sales summary</a>
         <a class="active" href="product-management.php">Product management</a>
         <a href="stock-order.php">Order stock</a>
+        <a href="pred-config.php">Prediction settings</a>
     </div>
     <div class="wrapper">
         <div class="container-fluid">

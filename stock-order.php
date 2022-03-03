@@ -152,6 +152,7 @@ a[id='autoOrder'] {
     <a href="sales.php">Sales summary</a>
     <a href="product-management.php">Product management</a>
     <a class="active" href="stock-order.php">Order stock</a>
+    <a href="pred-config.php">Prediction settings</a>
 </div>
 <div class="wrapper">
         <div class="container-fluid">

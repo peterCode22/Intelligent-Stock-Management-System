@@ -196,6 +196,7 @@ if(isset($_POST["pid"]) && !empty($_POST["pid"])){
         <a href="sales.php">Sales summary</a>
         <a class="active" href="product-management.php">Product management</a>
         <a href="stock-order.php">Order stock</a>
+        <a href="pred-config.php">Prediction settings</a>
     </div>
     <div class="wrapper">
         <div class="container-fluid">
@@ -230,7 +231,7 @@ if(isset($_POST["pid"]) && !empty($_POST["pid"])){
                             echo "</tr>";
                         echo "</thead>";
                         echo "<tbody>";
-                            echo '<tr style=' . $style . '>';
+                            echo '<tr>';
                                 echo "<td>" . $row['ProdID'] . "</td>";
                                 echo "<td>" . $row['ProdName'] . "</td>";
                                 echo "<td>" . $row['RetailPrice'] . "</td>";

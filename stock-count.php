@@ -68,6 +68,7 @@ if (!isset($_SESSION["acc_type"]) || $_SESSION["acc_type"] !== 'admin') {
         <a href="sales.php">Sales summary</a>
         <a href="product-management.php">Product management</a>
         <a href="stock-order.php">Order stock</a>
+        <a href="pred-config.php">Prediction settings</a>
     </div>
 
     <div style="padding-left:16px">

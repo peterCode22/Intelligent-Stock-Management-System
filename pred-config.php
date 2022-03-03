@@ -41,6 +41,12 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
         }
     }
 
+    if (isset($_POST['from']) && isset($_POST['to'])){
+        $from = $_POST['from'];
+        $to = $_POST['to'];
+        shell_exec("python python/train.py $from $to");
+    }
+
 }
 
 ?>

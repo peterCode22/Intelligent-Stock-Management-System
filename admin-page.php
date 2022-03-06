@@ -31,7 +31,7 @@ if($stmt = $mysqli->prepare($predSQL)){
         $result = $stmt->get_result();
               
         if($result->num_rows == 0){ //Prediction period has passed
-            shell_exec('python python/bpnn.py');
+            shell_exec('python python/predict.py');
             $accurate = shell_exec('python python/test.py');
             if ($accurate === False){
                 $message = "Last prediction period has exceeded inaccuracy threshold. Model re-training recommended!";

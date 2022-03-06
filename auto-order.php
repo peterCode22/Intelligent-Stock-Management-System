@@ -23,7 +23,7 @@ $_SESSION['orderValue'] = 0;
 // Attempt select query execution
 $sql = "SELECT ProdID, ProdName, SupplierPrice FROM products";
 
-$output = shell_exec("python python/bpnn.py");
+$output = shell_exec("python python/predict.py");
 $prediction = json_decode($output, TRUE);
 
 if($result = $mysqli->query($sql)){

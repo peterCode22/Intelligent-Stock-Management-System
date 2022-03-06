@@ -47,12 +47,14 @@ currData = batchDF.groupby('ProdID')['Quantity'].sum().reset_index()
 allProducts = prodDF['Product']
 diffProd = {} #Dictionary of products and difference in their predicted quantity vs actual
 
-salesSQL = "SELECT DayT, ProductID, Predicted FROM dsp.sales WHERE (Predicted IS NOT NULL) AND (DayT BETWEEN %s AND %s)"
+salesSQL = "SELECT DayT, ProductID, Predicted FROM sales WHERE (Predicted IS NOT NULL) AND (DayT BETWEEN %s AND %s)"
 param = (startDate, endDate)
 salesCursor = conn.cursor()
 salesCursor.execute(salesSQL, param)
 salesResult = salesCursor.fetchall()
 salesCursor.close()
+
+conn.close()
 
 salesDB = pd.DataFrame(salesResult, columns=['Date', 'Product', 'Predicted'])
 

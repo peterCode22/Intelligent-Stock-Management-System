@@ -16,7 +16,6 @@ if(!isset($_SESSION["acc_type"]) || $_SESSION["acc_type"] !== 'admin'){
     exit;
 }
 
-
 // Check if prediciton period has passed
 // if next day has a prediction or null
 $tomorrow = new DateTime('tomorrow');
@@ -33,7 +32,7 @@ if($stmt = $mysqli->prepare($predSQL)){
         if($result->num_rows == 0){ //Prediction period has passed
             shell_exec('python python/predict.py');
             $accurate = shell_exec('python python/test.py');
-            if ($accurate === False){
+            if ($accurate[0] == 0){
                 $message = "Last prediction period has exceeded inaccuracy threshold. Model re-training recommended!";
                 echo "<script type='text/javascript'>alert('$message');</script>";
             }

@@ -36,7 +36,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
     }
     if (isset($_POST['error'])){
         if ($_POST['error'] > 0){
-            $data['SME'] = floatval($_POST['error']);
+            $data['MSE'] = floatval($_POST['error']);
             $newJsonString = json_encode($data);
             file_put_contents('python/trainConfig.json', $newJsonString);
         }
@@ -113,9 +113,9 @@ body {
             <input type="radio" id="monthly" name="deliveryFreq" value="monthly">
             <label for="monthly">Monthly</label><br>
         
-        <h3>What is the desired maximum Squared Mean Error (SME)?</h3>
-        <p> If the algorithm's SME is higher than specified value, the user will be notified. </p>
-            <label for="error">Squared Mean Error:</label>
+        <h3>What is the desired maximum Mean Squared Error (MSE)?</h3>
+        <p> If the algorithm's MSE is higher than specified value, the user will be notified. </p>
+            <label for="error">Mean Squared Error:</label>
             <input type="number" id="error" name="error" min="0" step="0.01">
             <br>
             <input type="submit" value="Apply changes">

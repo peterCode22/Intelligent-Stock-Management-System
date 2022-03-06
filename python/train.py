@@ -27,9 +27,9 @@ salesDF = pd.DataFrame(saleResult, columns=['Date', 'Product', 'Quantity', 'Pric
 
 #Creating input and output dataframes
 xSalesDF = salesDF[['Product']]
+xSalesDF['Price'] = salesDF['Price']
 xSalesDF['WeekDay'] = pd.to_datetime(salesDF['Date']).dt.dayofweek
 xSalesDF['MonthDay'] = pd.to_datetime(salesDF['Date']).dt.day
-xSalesDF['Price'] = salesDF['Price']
 
 from sklearn.preprocessing import StandardScaler
 scalerX = StandardScaler()

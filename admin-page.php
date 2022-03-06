@@ -1,6 +1,8 @@
 <?php
 // Initialize the session
 session_start();
+
+require_once "config.php";
  
 // Check if the user is logged in, if not then redirect him to login page
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
@@ -13,6 +15,35 @@ if(!isset($_SESSION["acc_type"]) || $_SESSION["acc_type"] !== 'admin'){
 	header("location: index.php");
     exit;
 }
+
+
+// Check if prediciton period has passed
+// if next day has a prediction or null
+$tomorrow = new DateTime('tomorrow');
+$predSQL = "SELECT Predicted FROM sales WHERE DayT = ?";
+if($stmt = $mysqli->prepare($predSQL)){
+    // Bind variables to the prepared statement as parameters
+    $stmt->bind_param("s", $tmrStr);
+    $tmrStr = $tomorrow->format('Y-m-d');
+    // Attempt to execute the prepared statement
+    if($stmt->execute()){
+        // Records created successfully. Redirect to landing page
+        $result = $stmt->get_result();
+              
+        if($result->num_rows == 0){ //Prediction period has passed
+            shell_exec('python python/bpnn.py');
+            $accurate = shell_exec('python python/test.py');
+            if ($accurate === False){
+                $message = "Last prediction period has exceeded inaccuracy threshold. Model re-training recommended!";
+                echo "<script type='text/javascript'>alert('$message');</script>";
+            }
+        }
+    }
+}
+ 
+// Close statement
+$stmt->close();
+
 
 ?>
  

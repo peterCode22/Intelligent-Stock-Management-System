@@ -30,8 +30,6 @@ batchCursor.execute(batchSQL)
 batchResult = batchCursor.fetchall()
 batchCursor.close()
 
-conn.close()
-
 prodDF = pd.DataFrame(prodResult, columns=['Product', 'RPrice'])
 batchDF = pd.DataFrame(batchResult, columns=['BatchID', 'ProdID', 'Quantity', 'Name'])
 
@@ -54,10 +52,11 @@ scalerY = load(open("python/scalerY.pkl", 'rb'))
 inputData = []
 for date in dateRange:
     for elem in prodResult:
-        tempTup = elem + (date.weekday(), date.day)
+        tempTup = elem + (date.weekday(), date.day, date.date())
         inputData.append(tempTup)
 
-inputDF = pd.DataFrame(inputData, columns=['Product', 'Price', 'WeekDay', 'MonthDay'])
+DF = pd.DataFrame(inputData, columns=['Product', 'Price', 'WeekDay', 'MonthDay', 'Date'])
+inputDF = DF[['Product', 'Price', 'WeekDay', 'MonthDay']]
 
 X = scalerX.transform(inputDF)
 
@@ -67,14 +66,27 @@ prediction = scalerY.inverse_transform(prediction)
 
 currData = batchDF.groupby('ProdID')['Quantity'].sum().reset_index()
 
-inputDF['Prediction'] = np.ceil(prediction)
+fullDF = DF
+fullDF['Prediction'] = np.ceil(prediction)
 
-prodPredDF = inputDF.groupby('Product')['Prediction'].sum().reset_index()
-print(prodPredDF)
+prodPredDF = fullDF.groupby('Product')['Prediction'].sum().reset_index()
 
 #Go through all products
 allProducts = prodDF['Product']
 diffProd = {} #Dictionary of products and difference in their predicted quantity vs actual
+
+dbCursor = conn.cursor()
+salesSQL = 'INSERT INTO sales (DayT, ProductID, Predicted) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE Predicted = %s'
+for currDay in dateRange:
+    for product in allProducts:
+        tempPred = fullDF[(fullDF['Date'] == currDay.date()) & (fullDF['Product'] == product)]['Prediction'].values[0]
+        dayVar = currDay.strftime('%Y-%m-%d')
+        prodVar = int(product)
+        insVar = (dayVar, prodVar, tempPred, tempPred)
+
+conn.commit()
+dbCursor.close()
+conn.close()
 
 for prod in allProducts:
     desiredQuantity = prodPredDF[prodPredDF['Product'] == prod]['Prediction'].values[0]

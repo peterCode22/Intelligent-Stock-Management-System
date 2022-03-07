@@ -94,7 +94,7 @@ body {
 <div class="topnav">
     <a href="admin-page.php">Home</a>
     <a href="stock-count.php">Stock count</a>
-    <a href="sales.php">Sales summary</a>
+    <a href="reports.php">Reports</a>
     <a href="product-management.php">Product management</a>
     <a href="stock-order.php">Order stock</a>
     <a class="active" href="pred-config.php">Prediction settings</a>

@@ -107,7 +107,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             top:1px;
         }
 
-        .checkoutButton {
+        .placeButton {
             box-shadow:inset 0px 1px 0px 0px #fce2c1;
             background:linear-gradient(to bottom, #ffc477 5%, #fb9e25 100%);
             background-color:#ffc477;
@@ -123,11 +123,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             text-decoration:none;
             text-shadow:0px 1px 0px #cc9f52;
         }
-        .checkoutButton:hover {
+        .placeButton:hover {
             background:linear-gradient(to bottom, #fb9e25 5%, #ffc477 100%);
             background-color:#fb9e25;
         }
-        .checkoutButton:active {
+        .placeButton:active {
             position:relative;
             top:1px;
         }
@@ -136,24 +136,24 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
   background-color: #333;
 }
 
-.topnav a {
-  float: left;
-  color: #f2f2f2;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
-}
+    .topnav a {
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+    }
 
-.topnav a:hover {
-  background-color: #ddd;
-  color: black;
-}
+    .topnav a:hover {
+    background-color: #ddd;
+    color: black;
+    }
 
-.topnav a.active {
-  background-color: #04AA6D;
-  color: white;
-}
+    .topnav a.active {
+    background-color: #04AA6D;
+    color: white;
+    }
 
     </style>
 </head>
@@ -161,7 +161,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <div class="topnav">
     <a href="admin-page.php">Home</a>
     <a href="stock-count.php">Stock count</a>
-    <a href="sales.php">Sales summary</a>
+    <a href="reports.php">Reports</a>
     <a href="product-management.php">Product management</a>
     <a class="active" href="stock-order.php">Order stock</a>
     <a href="pred-config.php">Prediction settings</a>

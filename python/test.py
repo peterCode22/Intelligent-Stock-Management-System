@@ -20,14 +20,10 @@ if config['delivery'] == 'weekly':
 else:
     timePeriod = 30
 
-tempTodayDate = datetime.datetime.strptime('2022-03-13', '%Y-%m-%d')
-
 today = datetime.datetime.today().date()
 
-startDate = tempTodayDate - datetime.timedelta(days = timePeriod)
-endDate = tempTodayDate
-
-smeDict = {}
+startDate = today - datetime.timedelta(days = timePeriod)
+endDate = today
 
 salesSQL = "SELECT Quantity, Predicted FROM sales WHERE (Predicted IS NOT NULL) AND (DayT BETWEEN %s AND %s)"
 param = (startDate, endDate)

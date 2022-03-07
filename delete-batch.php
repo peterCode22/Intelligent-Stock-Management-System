@@ -142,7 +142,7 @@ if(isset($_POST["bid"]) && !empty($_POST["bid"])){
     <div class="topnav">
         <a href="admin-page.php">Home</a>
         <a class="active" href="stock-count.php">Stock count</a>
-        <a href="sales.php">Sales summary</a>
+        <a href="reports.php">Reports</a>
         <a href="product-management.php">Product management</a>
         <a href="stock-order.php">Order stock</a>
         <a href="pred-config.php">Prediction settings</a>

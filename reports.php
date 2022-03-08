@@ -25,29 +25,6 @@ if($result = $mysqli->query($sql)){
     }
 }
 
-var_dump($_POST['previous']);
-var_dump($_POST['prediction']);
-
-if($_SERVER['REQUEST_METHOD'] == "POST"){
-    if(isset($_POST['reportType']) && isset($_POST['dateIntV']) && isset($_POST['from']) && isset($_POST['from'])){
-        $type = $_POST['reportType'];
-        $dateIntVal = $_POST['dateIntV'];
-        $from = $_POST['from'];
-        $to = $_POST['to'];
-        $pyStr = "python python/report.py $type $dateIntVal $from $to";
-        if(isset($_POST['previous'])){
-            $pyStr .= "previous";
-        }
-        if(isset($_POST['prediction'])){
-            $pyStr .= "prediction";
-        }
-        shell_exec($pyStr);
-    }
-    else{
-        //error
-    }
-}
-
 ?>
  
 <!DOCTYPE html>
@@ -104,44 +81,44 @@ body {
         <center>
         <h1>Generate report</h1><br>
 
-        <h3>Choose report type:</h3><br>
-        <form method="post">
+        <h3>Report type:</h3>
+        <form method="post" action="view-report.php">
             <input type="radio" id="moneySales" name="reportType" value="moneySales">
             <label for="moneySales">Sales(£)</label><br>
             <input type="radio" id="prodSales" name="reportType" value="prodSales">
-            <label for="prodSales">Product sales(Quantity sold)</label>
-            <input type="number" name="prodID"><br>
+            <label for="prodSales">Product sales(Quantity sold)</label><br>
+            <input type="number" name="prodID" >
+            <label for="prodID">Product ID</label><br>
             <input type="radio" id="predAcc" name="reportType" value="predAcc">
             <label for="predAcc">Prediction's accuracy(%)</label><br>
             <input type="radio" id="predMSE" name="reportType" value="predMSE">
             <label for="predMSE">Prediction's accuracy (MSE)</label><br>
-            
-            <br>
+        
+            <h3>Report's format:</h3>
+            <input type="radio" id="table" name="format" value="table">
+            <label for="table">Table</label><br>
+            <input type="radio" id="graph" name="format" value="graph">
+            <label for="graph">Graph</label><br>
 
-            <h3>Report's time interval:</h3><br>
+            <h3>Report's time interval:</h3>
             <input type="radio" id="daily" name="dateIntV" value="daily">
             <label for="daily">Daily</label><br>
             <input type="radio" id="weekly" name="dateIntV" value="weekly">
             <label for="weekly">Weekly</label><br>
 
-            <br>
-
-            <h3>Specify date range:</h3><br>
+            <h3>Specify date range:</h3>
         <?php
             echo '<label for="from">From:</label>';
             echo '<input type="date" name="from" min="' . $minDate .'" max="' . $maxDate . '"><br>';
             echo '<label for="to">To:</label>';
             echo '<input type="date" name="to" min="' . $minDate .'" max="' . $maxDate . '"><br>';
-            echo '<br>';
         ?>
 
-            <h3>Comparison options:</h3><br>
+            <h3>Comparison options:</h3>
             <input type="checkbox" name="prediction">
             <label for="prediction">vs. prediction</label><br>
             <input type="checkbox" name="previous">
             <label for="previous">vs. last month</label><br>
-
-            <br>
 
             <input type="submit" value="Generate Report">
             </form>

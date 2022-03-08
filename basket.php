@@ -74,7 +74,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 			margin-top: 10px;
 		}
         
-        
         .returnButton {
             box-shadow:inset 0px 1px 0px 0px #54a3f7;
             background:linear-gradient(to bottom, #007dc1 5%, #0061a7 100%);

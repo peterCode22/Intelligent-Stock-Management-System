@@ -143,11 +143,6 @@ body {
     <p>
         <center>
             <?php
-                if($type == 'moneySales'){
-                    echo '<h1> sales summary report:</h1>';
-                } else if($type == 'prodSales'){
-                    echo '<h1> sales summary report:</h1>';
-                }
 
                 if($format == 'table'){
                     echo $output;

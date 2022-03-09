@@ -69,6 +69,7 @@ def predictInDB():
             dayVar = currDay.strftime('%Y-%m-%d')
             prodVar = int(product)
             insVar = (dayVar, prodVar, tempPred, tempPred)
+            dbCursor.execute(salesSQL, insVar)
     conn.commit()
     dbCursor.close()
 

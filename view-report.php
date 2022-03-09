@@ -16,29 +16,46 @@ if(!isset($_SESSION["acc_type"]) || $_SESSION["acc_type"] !== 'admin'){
     exit;
 }
 
-
 if($_SERVER['REQUEST_METHOD'] == "POST"){
-    if(isset($_POST['reportType']) && isset($_POST['dateIntV']) && isset($_POST['from']) && isset($_POST['from']) && isset($_POST['format'])){
+    if(isset($_POST['reportType']) && isset($_POST['format'])){
         $type = $_POST['reportType'];
-        $dateIntVal = $_POST['dateIntV'];
-        $from = $_POST['from'];
-        $to = $_POST['to'];
         $format = $_POST['format'];
-        $pyStr = "python python/report.py $type $dateIntVal $format $from $to";
-        if(isset($_POST['prodID'])){
-            $pyStr .= $_POST['prodID'];
-        }
+        $pyArgv = array(
+        "type" => $type,
+        'format' => $format,
+        'month' => $_POST['month'],
+        'week' => $_POST['week'],
+        'prodID' => $_POST['prodID']);
+
+        $pyStr = "python python/report.py";
+        
         if(isset($_POST['previous'])){
-            $pyStr .= "previous";
+            $pyArgv['previous'] = True;
         }
+
         if(isset($_POST['prediction'])){
-            $pyStr .= "prediction";
+            $pyArgv['prediction'] = True;
         }
-        $output = shell_exec($pyStr);
+
+        $pyJson = json_encode($pyArgv);
+        //echo $pyJson;
+        if(empty($_POST['month']) && empty($_POST['week'])){ //no time period specified
+            header("location: reports.php");
+            exit;
+        }
+
+        if(!empty($_POST['month']) && !empty($_POST['week'])){ //if both month and week set
+            header("location: reports.php");
+            exit;
+        }
+
+        echo shell_exec("python python/report.py " . json_encode(json_encode($pyArgv)));
+        //}
+        
     }
     else{ //form submitted with missing fields
-        header("location: reports.php");
-        exit;
+        //header("location: reports.php");
+        //exit;
     }
 }
 else{ //no form submitted
@@ -127,16 +144,15 @@ body {
         <center>
             <?php
                 if($type == 'moneySales'){
-                    echo '<h1>' . ucfirst($dateIntVal) . ' sales summary report:</h1>';
+                    echo '<h1> sales summary report:</h1>';
                 } else if($type == 'prodSales'){
-                    echo '<h1>' . ucfirst($dateIntVal) . /*PRODUCT NAME (PRODUCT ID) */ 'sales summary report:</h1>';
+                    echo '<h1> sales summary report:</h1>';
                 }
 
                 if($format == 'table'){
                     echo $output;
                 }
                 else{
-                    shell_exec("python python/report.py");
                     echo '<figure><img src="python/graph.jpg?refresh"></figure>';
                 }
             ?>

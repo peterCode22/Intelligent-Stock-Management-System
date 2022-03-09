@@ -16,14 +16,6 @@ if(!isset($_SESSION["acc_type"]) || $_SESSION["acc_type"] !== 'admin'){
     exit;
 }
 
-$sql = "SELECT MIN(DayT), MAX(DayT) FROM sales;";
-if($result = $mysqli->query($sql)){
-    if($result->num_rows == 1){
-        $row = $result->fetch_array(MYSQLI_ASSOC);
-        $minDate = $row['MIN(DayT)'];
-        $maxDate = $row['MAX(DayT)'];
-    }
-}
 
 ?>
  
@@ -100,20 +92,13 @@ body {
             <input type="radio" id="graph" name="format" value="graph">
             <label for="graph">Graph</label><br>
 
-            <h3>Report's time interval:</h3>
-            <input type="radio" id="daily" name="dateIntV" value="daily">
-            <label for="daily">Daily</label><br>
-            <input type="radio" id="weekly" name="dateIntV" value="weekly">
-            <label for="weekly">Weekly</label><br>
-
-            <h3>Specify date range:</h3>
-        <?php
-            echo '<label for="from">From:</label>';
-            echo '<input type="date" name="from" min="' . $minDate .'" max="' . $maxDate . '"><br>';
-            echo '<label for="to">To:</label>';
-            echo '<input type="date" name="to" min="' . $minDate .'" max="' . $maxDate . '"><br>';
-        ?>
-
+            <h3>Specify period(select one):</h3>
+        
+            <label for="from">Month</label>
+            <input type="month" name="month"><br>
+            <label for="to">Week</label>
+            <input type="week" name="week"><br>
+        
             <h3>Comparison options:</h3>
             <input type="checkbox" name="prediction">
             <label for="prediction">vs. prediction</label><br>

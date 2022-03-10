@@ -74,7 +74,7 @@ body {
         <h1>Generate report</h1><br>
 
         <h3>Report type:</h3>
-        <form method="post" action="view-report.php">
+        <form method="post" action="view-report.php?refresh">
             <input type="radio" id="moneySales" name="reportType" value="moneySales">
             <label for="moneySales">Sales(£)</label><br>
             <input type="radio" id="prodSales" name="reportType" value="prodSales">

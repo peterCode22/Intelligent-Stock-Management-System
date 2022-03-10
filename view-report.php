@@ -49,9 +49,9 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
             exit;
         }
 
-        echo shell_exec("python python/report.py " . json_encode(json_encode($pyArgv)));
+        $output = shell_exec("python python/report.py " . json_encode(json_encode($pyArgv)));
         //}
-        
+        echo json_encode($pyArgv);
     }
     else{ //form submitted with missing fields
         //header("location: reports.php");

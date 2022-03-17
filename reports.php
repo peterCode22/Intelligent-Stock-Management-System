@@ -91,6 +91,8 @@ body {
             <label for="table">Table</label><br>
             <input type="radio" id="graph" name="format" value="graph">
             <label for="graph">Graph</label><br>
+            <input type="radio" id="acc" name="format" value="acc">
+            <label for="acc">Accuracy</label><br>
 
             <h3>Specify period(select one):</h3>
         

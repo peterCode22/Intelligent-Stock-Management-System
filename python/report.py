@@ -1,4 +1,5 @@
 from ast import arg
+from statistics import mean
 from time import time
 import mysql.connector as dbCon
 import pandas as pd
@@ -10,6 +11,7 @@ import datetime
 import math
 import json
 from sklearn.metrics import mean_squared_error
+from sklearn.metrics import r2_score
 import matplotlib.pyplot as plt
 import sys
 
@@ -157,5 +159,79 @@ if bool(argDict['month']): #month
             htmlResult = table.to_html(index=False)
             print(htmlResult)
 
+    if argDict['type'] == 'predAcc':
+        sql = "SELECT DayT, Quantity, Predicted FROM sales WHERE MONTH(DayT) = %s AND YEAR(DayT) = %s AND Predicted IS NOT NULL"
+        accCursor = conn.cursor()
+        param = (month, year)
+        accCursor.execute(sql, param)
+        accResult = accCursor.fetchall()
+        accCursor.close()
+        accDF = pd.DataFrame(accResult, columns=['Date', 'Quantity', 'Predicted'])
+        accDF['Day'] = pd.to_datetime(accDF['Date']).dt.day
+        accDF.dropna()
+        Acc = r2_score(accDF['Quantity'], accDF['Predicted']) * 100
+
+        previousAcc = None
+
+        if 'previous' in argDict:
+            previousCursor = conn.cursor()
+            paramPrevious = (month - 1, year)
+            previousCursor.execute(sql, paramPrevious)
+            previousResult = previousCursor.fetchall()
+            previousCursor.close()
+            previousAccDF = pd.DataFrame(data=previousResult, columns=['Date', 'PreviousQuantity', 'PreviousPredicted'])
+            previousAccDF['Day'] = pd.to_datetime(previousAccDF['Date']).dt.day
+            previousAccDF = previousAccDF[previousAccDF['PreviousPredicted']]
+            previousAccDF.dropna()
+            if previousAccDF.empty is False:
+                previousAcc = r2_score(previousAccDF['PreviousQuantity'], previousAccDF['PreviousPredicted']) * 100
+
+        html = "<h1> Prediction's accuracy in " + monthNames[month - 1] + ' ' + str(year) + ":</h1>"
+        html = html + "<br><h3>" + str(round(Acc, 2)) + "%</h3>"
+
+        if previousAcc is not None:
+            html = html + "<br><br>" + "<h1> Prediction's accuracy previous month:</h1><br><h3>" + str(round(previousAcc, 2)) + "%</h3>"
+
+        if 'previous' in argDict and previousAcc is None:
+            html = html + "<br><br><h3>There is no prediction and/or sales data for previous month.</h3>"
+        
+        print(html)
+
+    if argDict['type'] == 'predMSE':
+        sql = "SELECT DayT, Quantity, Predicted FROM sales WHERE MONTH(DayT) = %s AND YEAR(DayT) = %s AND Predicted IS NOT NULL"
+        mseCursor = conn.cursor()
+        param = (month, year)
+        mseCursor.execute(sql, param)
+        mseResult = mseCursor.fetchall()
+        mseCursor.close()
+        mseDF = pd.DataFrame(mseResult, columns=['Date', 'Quantity', 'Predicted'])
+        mseDF['Day'] = pd.to_datetime(mseDF['Date']).dt.day
+        mseDF.dropna()
+        MSE = mean_squared_error(mseDF['Quantity'], mseDF['Predicted'])
+
+        previousMSE = None
+
+        if 'previous' in argDict:
+            previousCursor = conn.cursor()
+            paramPrevious = (month - 1, year)
+            previousCursor.execute(sql, paramPrevious)
+            previousResult = previousCursor.fetchall()
+            previousCursor.close()
+            previousMSEDF = pd.DataFrame(data=previousResult, columns=['Date', 'PreviousQuantity', 'PreviousPredicted'])
+            previousMSEDF['Day'] = pd.to_datetime(previousMSEDF['Date']).dt.day
+            previousMSEDF.dropna()
+            if previousMSEDF.empty is False:
+                previousMSE = mean_squared_error(previousMSEDF['PreviousQuantity'], previousMSEDF['PreviousPredicted'])
+
+        html = "<h1> Prediction's MSE in " + monthNames[month - 1] + ' ' + str(year) + ":</h1>"
+        html = html + "<br><h3>" + str(round(MSE, 2)) + "</h3>"
+
+        if previousMSE is not None:
+            html = html + "<br><br>" + "<h1> Prediction's MSE previous month:</h1><br><h3>" + str(round(previousMSE, 2)) + "</h3>"
+
+        if 'previous' in argDict and previousMSE is None:
+            html = html + "<br><br><h3>There is no prediction and/or sales data for previous month.</h3>"
+
+        print(html)
  
 conn.close()

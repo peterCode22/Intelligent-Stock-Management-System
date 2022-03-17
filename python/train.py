@@ -39,8 +39,8 @@ ySalesDF = salesDF[['Quantity']]
 Y = scalerY.fit_transform(ySalesDF) 
 
 #Export scalers
-dump(scalerX, open('scalerX.pkl', 'wb'))
-dump(scalerY, open('scalerY.pkl', 'wb'))
+dump(scalerX, open('python/scalerX.pkl', 'wb'))
+dump(scalerY, open('python/scalerY.pkl', 'wb'))
 
 #Training
 from sklearn.neural_network import MLPRegressor
@@ -48,4 +48,4 @@ bpnn = MLPRegressor(hidden_layer_sizes=(10,10), solver='sgd', learning_rate='con
 bpnn.fit(X, Y)
 
 #Export model
-dump(bpnn, open('model.pkl','wb'))
+dump(bpnn, open('python/model.pkl','wb'))

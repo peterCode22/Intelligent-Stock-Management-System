@@ -26,6 +26,10 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
         'month' => $_POST['month'],
         'week' => $_POST['week'],
         'prodID' => $_POST['prodID']);
+        
+        if ($type == 'prodSales' && empty($_POST['prodID'])){
+            //error
+        }
 
         $pyStr = "python python/report.py";
         
@@ -38,7 +42,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
         }
 
         $pyJson = json_encode($pyArgv);
-        //echo $pyJson;
+        
         if(empty($_POST['month']) && empty($_POST['week'])){ //no time period specified
             header("location: reports.php");
             exit;
@@ -144,8 +148,11 @@ body {
         <center>
             <?php
 
-                if($format == 'table'){
+                if($format == 'table' || $format == 'acc'){
                     echo $output;
+                    if ($output == null){
+                        echo '<h1>No prediction and/or sales data for selected period.</h1>';
+                    }
                 }
                 else{
                     echo '<figure><img src="python/graph.jpg?refresh"></figure>';

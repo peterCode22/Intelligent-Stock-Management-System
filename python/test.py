@@ -36,7 +36,7 @@ salesDB = pd.DataFrame(salesResult, columns=['Quantity', 'Predicted'])
 
 err = mean_squared_error(salesDB['Quantity'], salesDB['Predicted'])
 
-if err > config['SME']:
+if err > config['MSE']:
     print (0)
 else:
     print (1)

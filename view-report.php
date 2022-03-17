@@ -149,6 +149,7 @@ body {
             <?php
 
                 if($format == 'table' || $format == 'acc'){
+                    echo '<table class="table table-bordered table-striped">';
                     echo $output;
                     if ($output == null){
                         echo '<h1>No prediction and/or sales data for selected period.</h1>';

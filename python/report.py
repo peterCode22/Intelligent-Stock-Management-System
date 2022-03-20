@@ -171,9 +171,10 @@ if bool(argDict['month']): #month
             
             if dailyPreviousProductDF is not None:
                 table = pd.merge(table, dailyPreviousProductDF, how='outer')
+                table[table['PreviousQuantity'].notnull()]['PreviousQuantity'] = table[table['PreviousQuantity'].notnull()]['PreviousQuantity'].astype(int)
                 for row in range(0, table.shape[0]):
                     if table.iloc[row]['PreviousQuantity'] != 0 and table.iloc[row]['Quantity'] != 0:
-                        table.loc[[row],['Current vs. Last Month']] = str(round((table.iloc[row]['Quantity'] - table.iloc[row]['PreviousQuantity']) / table.iloc[row]['Quantity'] * 100, 2)) + '%'
+                        table.loc[[row],['Current vs. Last Month']] = str((table.iloc[row]['Quantity'] - table.iloc[row]['PreviousQuantity']) / table.iloc[row]['Quantity'] * 100) + '%'
 
             htmlResult = table.to_html(index=False)
             print(htmlResult)

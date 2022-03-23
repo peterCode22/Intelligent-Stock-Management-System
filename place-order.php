@@ -1,4 +1,7 @@
 <?php
+
+require_once "loader.php";
+
 // Initialize the session
 session_start();
 
@@ -17,12 +20,7 @@ if($_SESSION["acc_type"] !== 'admin'){
     exit;
 }
 
-if(!isset($_SESSION['adminOrder'])){
-    header("location: stock-order.php");
-    exit;
-}
-
-if($_SESSION['orderValue'] == 0){
+if(!isset($_SESSION['adminBasket'])){
     header("location: stock-order.php");
     exit;
 }
@@ -36,14 +34,13 @@ if($stmt = $mysqli->prepare($sql)){
     // Attempt to execute the prepared statement
     $stmt->execute();
     $orderID = $stmt->insert_id;
-    foreach ($_SESSION['adminOrder'] as $data) {
+    foreach ($_SESSION['adminBasket']->getContent() as $item) {
         $interSql = "INSERT INTO batches (ProdID, SuppOrdID, Quantity) VALUES (?,?,?)";
         $stmt = $mysqli->prepare($interSql);
-        $stmt->bind_param("iii", $data['ProdID'], $orderID, $data['Quantity']);
+        $stmt->bind_param("iii", $item->getID(), $orderID, $item->getQuantity());
         $stmt->execute();
     }
-    $_SESSION['adminOrder'] = array();
-    $_SESSION['orderValue'] = 0;
+    unset($_SESSION['adminBasket']);
     $_SESSION['adminOrderPlaced'] = True;
     header("location: stock-order.php");
     exit();

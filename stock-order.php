@@ -1,4 +1,6 @@
 <?php
+
+require_once "loader.php";
 // Initialize the session
 session_start();
  
@@ -28,28 +30,19 @@ if(isset($_SESSION['noSugg'])){
 
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
-    $_POST['productID'] = intval($_POST['productID']);
-    $_POST['quant'] = intval($_POST['quant']);
-    $_POST['productPrice'] = floatval($_POST['productPrice']);
-    $searched = $_POST['productID'];
-    if (!isset($_SESSION['adminOrder'])){
-        $_SESSION['adminOrder'] = array();
-        $_SESSION['orderValue'] = 0;
+    $pid = intval($_POST['productID']);
+    $name = $_POST['productName'];
+    $quantity = intval($_POST['quant']);
+    $price = floatval($_POST['productPrice']);
+
+    if (!isset($_SESSION['adminBasket'])){
+        $_SESSION['adminBasket'] = new Basket();
     }
-    $key = array_search($searched, array_column($_SESSION['adminOrder'], 'ProdID'));
-    if ($key === false){
-        $newOrderEntry = array(
-            'ProdID'=>$_POST['productID'],
-            'ProdName'=>$_POST['productName'],
-            'Quantity'=>$_POST['quant'],
-            'Price'=>$_POST['productPrice'],
-            'Value'=>$_POST['productPrice'] * $_POST['quant']);
-        $_SESSION['adminOrder'][] = $newOrderEntry;
-        $_SESSION['orderValue'] += $newOrderEntry['Value'];
+
+    if ($_SESSION['adminBasket']->itemExists($pid)){
+        $_SESSION['adminBasket']->addQuantity($pid, $quantity);
     } else{
-        $_SESSION['adminOrder'][$key]['Quantity'] += $_POST['quant'];
-        $_SESSION['adminOrder'][$key]['Value'] = $_SESSION['adminOrder'][$key]['Quantity'] * $_SESSION['adminOrder'][$key]['Price'];
-        $_SESSION['orderValue'] += $newOrderEntry['Value'];
+        $_SESSION['adminBasket']->addItem($pid, $name, $price, $quantity);
     }
 	//Check if the user is already logged in, if no then redirect to login page
 	if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){

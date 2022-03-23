@@ -1,4 +1,6 @@
 <?php
+
+require_once "loader.php";
 // Initialize the session
 session_start();
  
@@ -16,28 +18,14 @@ if($_SESSION["acc_type"] !== 'admin'){
 
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
-    if(isset($_POST['productID']) && isset($_POST['newQuant'])){
-        $_POST['productID'] = intval($_POST['productID']);
-        $_POST['newQuant'] = intval($_POST['newQuant']);
-        if (($key = array_search($_POST['productID'], array_column($_SESSION['adminOrder'], 'ProdID'))) !== false){
-            $oldQuant = $_SESSION['adminOrder'][$key]['Quantity'];
-            $_SESSION['adminOrder'][$key]['Quantity'] = $_POST['newQuant'];
-            $_SESSION['adminOrder'][$key]['Value'] = $_SESSION['adminOrder'][$key]['Quantity'] * $_SESSION['adminOrder'][$key]['Price'];
-            if ($_POST['newQuant'] >= $oldQuant){
-                $_SESSION['orderValue'] += ($_POST['newQuant'] - $oldQuant) * $_SESSION['adminOrder'][$key]['Price'];
-            } else{
-                $_SESSION['orderValue'] -= ($oldQuant - $_POST['newQuant']) * $_SESSION['adminOrder'][$key]['Price'];
-            }
-        }
-    }
-    else if(isset($_POST['prodID'])){
-        $_POST['prodID'] = intval($_POST['prodID']);
-        $key = array_search($_POST['prodID'], array_column($_SESSION['adminOrder'], 'ProdID'));
-        if ($key !== false){
-            $oldQuant = $_SESSION['adminOrder'][$key]['Quantity'];
-            $_SESSION['orderValue'] -= $oldQuant * $_SESSION['adminOrder'][$key]['Price'];
-            unset($_SESSION['adminOrder'][$key]);
-            $_SESSION['adminOrder'] = array_values($_SESSION['adminOrder']);
+    if(isset($_POST['newQuant'])){
+        $newQuant = $_POST['newQuant'];
+        $pid = $_POST['productID'];
+        $_SESSION['adminBasket']->changeQuantity($pid, $newQuant);
+    } else{
+        if(isset($_POST['productID'])){
+            $pid = $_POST['productID'];
+            $_SESSION['adminBasket']->removeItem($pid);
         }
     }
 }
@@ -167,8 +155,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <a href="pred-config.php">Prediction settings</a>
 </div>
     <?php
-            if(isset($_SESSION['adminOrder'])){
-                if (!empty($_SESSION['adminOrder'])){
+            if(isset($_SESSION['adminBasket'])){
+                if (!empty($_SESSION['adminBasket']->getContent())){
                     echo '<h1>Your current order:</h1>';
                     // Include config file
                     require_once "config.php";
@@ -183,34 +171,32 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                             echo "</tr>";
                         echo "</thead>";
                         echo "<tbody>";
-                        foreach ($_SESSION['adminOrder'] as $data) {
-                            if ($data['Quantity'] > 0){
+                        foreach ($_SESSION['adminBasket']->getContent() as $item) {
                             echo "<tr>";
-                                echo '<td>' . $data['ProdName'] . '</td>';
-                                echo '<td>' . $data['Quantity'] . '</td>';
+                                echo '<td>' . $item->getName(). '</td>';
+                                echo '<td>' . $item->getQuantity() . '</td>';
                                 echo '<td>';
-                                    echo '£' . number_format((float)$data['Price'], 2, '.', '');
+                                    echo '£' . number_format((float)$item->getPrice(), 2, '.', '');
                                 echo '</td>';
                                 echo '<td>';
                                     echo '<form action="' . $_SERVER['PHP_SELF'] . '"name="orderChange" method="post">
                                         <input type=number min=1 name=newQuant style="display: inline;"class=form-control required>
-                                        <input type=hidden name=productID value=' . $data['ProdID'] . ' >                                
+                                        <input type=hidden name=productID value=' . $item->getID() . ' >                                
                                         <button type=submit name=changeQuantity>Change quantity</button>
                                         </form>';
                                     echo '<form action="' . $_SERVER['PHP_SELF'] . '"name="orderDelete" method="post">
-                                        <input type=hidden name=prodID value=' . $data['ProdID'] . ' >
+                                        <input type=hidden name=productID value=' . $item->getID() . ' >
                                         <button type=submit name=orderDelSubmit>Delete item</button>
                                         </form>';
                                 echo '</td>';
                                 echo '<td>';
-                                    echo '£' . number_format((float)$data['Value'], 2, '.', '');
+                                    echo '£' . number_format((float)$item->getValue(), 2, '.', '');
                                 echo '</td>';
                             echo "</tr>";
-                            }
                         }
                         echo "</tbody>";
                     echo "</table>";
-                    echo '<h2>Order total value: <br> £' . number_format((float)$_SESSION['orderValue'], 2, '.', '') . '</h2>';
+                    echo '<h2>Order total value: <br> £' . number_format((float)$_SESSION['adminBasket']->getValue(), 2, '.', '') . '</h2>';
                     echo '<a href="place-order.php" id = "placeOrder">
                         <button class="placeButton">Place order</button> 
                         </a><br>';

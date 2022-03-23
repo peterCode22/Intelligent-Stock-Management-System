@@ -15,10 +15,16 @@ if(isset($_SESSION['orderPlaced'])){
     unset($_SESSION['orderPlaced']);
 }
 
+if(isset($_SESSION['acc_type'])){
+    if($_SESSION["acc_type"] !== 'customer'){
+        header("location: admin-page.php");
+        exit;
+    }
+}
+
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
     $pid = intval($_POST['productID']);
-    echo $_POST['productName'];
     $name = $_POST['productName'];
     $quantity = intval($_POST['quant']);
     $price = floatval($_POST['productPrice']);

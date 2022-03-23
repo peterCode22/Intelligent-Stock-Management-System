@@ -4,7 +4,7 @@ require_once './loader.php';
 class Basket{
     //Properties
     private $basketValue;
-    private $content;
+    private $content; //Array of Item Objects
 
     //Class constructor
     function __construct(){

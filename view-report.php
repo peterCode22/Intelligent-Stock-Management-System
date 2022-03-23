@@ -75,61 +75,7 @@ else{ //no form submitted
 <title>Report view</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-<style>
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.topnav {
-  overflow: hidden;
-  background-color: #333;
-}
-
-.topnav a {
-  float: left;
-  color: #f2f2f2;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
-}
-
-.topnav a:hover {
-  background-color: #ddd;
-  color: black;
-}
-
-.topnav a.active {
-  background-color: #04AA6D;
-  color: white;
-}
-
-.returnButton {
-    box-shadow:inset 0px 1px 0px 0px #54a3f7;
-    background:linear-gradient(to bottom, #007dc1 5%, #0061a7 100%);
-    background-color:#007dc1;
-    border-radius:6px;
-    border:1px solid #124d77;
-    display:inline-block;
-    cursor:pointer;
-    color:#ffffff;
-    font-family:Arial;
-    font-size:15px;
-    padding:6px 24px;
-    text-decoration:none;
-    text-shadow:0px 1px 0px #154682;
-}
-.returnButton:hover {
-    background:linear-gradient(to bottom, #0061a7 5%, #007dc1 100%);
-    background-color:#0061a7;
-}
-.returnButton:active {
-    position:relative;
-    top:1px;
-}
-
-</style>
+<link rel="stylesheet" href="style.css">
 <meta charset="utf-8"> 
 </head>
 <body>

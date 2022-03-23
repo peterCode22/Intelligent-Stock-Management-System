@@ -103,40 +103,7 @@ if(isset($_POST["pid"]) && !empty($_POST["pid"])){
     <meta charset="UTF-8">
     <title>Delete Record</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        .wrapper{
-            width: 600px;
-            margin: 0 auto;
-        }
-        body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        .topnav {
-            overflow: hidden;
-            background-color: #333;
-        }
-
-        .topnav a {
-            float: left;
-            color: #f2f2f2;
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-            font-size: 17px;
-        }
-
-        .topnav a:hover {
-            background-color: #ddd;
-            color: black;
-        }
-
-        .topnav a.active {
-            background-color: #04AA6D;
-            color: white;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="topnav">

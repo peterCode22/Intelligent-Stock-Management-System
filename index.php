@@ -1,9 +1,13 @@
 <?php
+
+// Include database config file
+require_once "config.php";
+
+require_once "loader.php";
+
 // Initialize the session
 session_start();
- 
-// Include config file
-require_once "config.php";
+
 
 if(isset($_SESSION['orderPlaced'])){
     $message = "Order placed successfully!";
@@ -11,30 +15,28 @@ if(isset($_SESSION['orderPlaced'])){
     unset($_SESSION['orderPlaced']);
 }
 
+if(isset($_SESSION['acc_type'])){
+    if($_SESSION["acc_type"] !== 'customer'){
+        header("location: admin-page.php");
+        exit;
+    }
+}
+
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
-    $_POST['productID'] = intval($_POST['productID']);
-    $_POST['quant'] = intval($_POST['quant']);
-    $_POST['productPrice'] = floatval($_POST['productPrice']);
-    $searched = $_POST['productID'];
+    $pid = intval($_POST['productID']);
+    $name = $_POST['productName'];
+    $quantity = intval($_POST['quant']);
+    $price = floatval($_POST['productPrice']);
+
     if (!isset($_SESSION['basket'])){
-        $_SESSION['basket'] = array();
-        $_SESSION['basketValue'] = 0;
+        $_SESSION['basket'] = new Basket();
     }
-    $key = array_search($searched, array_column($_SESSION['basket'], 'ProdID'));
-    if ($key === false){
-        $newBasketEntry = array(
-            'ProdID'=>$_POST['productID'],
-            'ProdName'=>$_POST['productName'],
-            'Quantity'=>$_POST['quant'],
-            'Price'=>$_POST['productPrice'],
-            'Value'=>$_POST['productPrice'] * $_POST['quant']);
-        $_SESSION['basket'][] = $newBasketEntry;
-        $_SESSION['basketValue'] += $newBasketEntry['Value'];
+
+    if ($_SESSION['basket']->itemExists($pid)){
+        $_SESSION['basket']->addQuantity($pid, $quantity);
     } else{
-        $_SESSION['basket'][$key]['Quantity'] += $_POST['quant'];
-        $_SESSION['basket'][$key]['Value'] = $_SESSION['basket'][$key]['Quantity'] * $_SESSION['basket'][$key]['Price'];
-        $_SESSION['basketValue'] += $newBasketEntry['Value'];
+        $_SESSION['basket']->addItem($pid, $name, $price, $quantity);
     }
 	//Check if the user is already logged in, if no then redirect to login page
 	if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
@@ -59,99 +61,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <style>
-        .wrapper{
-            width: 600px;
-            margin: 0 auto;
-        }
-        table tr td:last-child{
-            width: 120px;
-        }
-		input[type='number']{
-			width: 70px;
-		} 
-		a[id='login'] {
-			font-size: 30px;
-			position:absolute;
-			top:0;
-			right:0;
-			margin-right: 20px;
-			margin-top: 10px;
-		}
-		
-		a[id='logout'] {
-			font-size: 30px;
-			position:absolute;
-			top:0;
-			right:0;
-			margin-right: 20px;
-			margin-top: 10px;
-		}
-		
-		a[id='basket'] {
-			font-size: 30px;
-			position:absolute;
-			top:0;
-			left:0;
-			margin-left: 20px;
-			margin-top: 10px;
-		}
-
-        .loginButton {
-            box-shadow:inset 0px 1px 0px 0px #54a3f7;
-            background:linear-gradient(to bottom, #007dc1 5%, #0061a7 100%);
-            background-color:#007dc1;
-            border-radius:6px;
-            border:1px solid #124d77;
-            display:inline-block;
-            cursor:pointer;
-            color:#ffffff;
-            font-family:Arial;
-            font-size:15px;
-            padding:6px 24px;
-            text-decoration:none;
-            text-shadow:0px 1px 0px #154682;
-        }
-        .loginButton:hover {
-            background:linear-gradient(to bottom, #0061a7 5%, #007dc1 100%);
-            background-color:#0061a7;
-        }
-        .loginButton:active {
-            position:relative;
-            top:1px;
-        }
-
-        .logoffButton {
-            box-shadow:inset 0px 1px 0px 0px #f7c5c0;
-            background:linear-gradient(to bottom, #fc8d83 5%, #e4685d 100%);
-            background-color:#fc8d83;
-            border-radius:6px;
-            border:1px solid #d83526;
-            display:inline-block;
-            cursor:pointer;
-            color:#ffffff;
-            font-family:Arial;
-            font-size:15px;
-            font-weight:bold;
-            padding:6px 24px;
-            text-decoration:none;
-            text-shadow:0px 1px 0px #b23e35;
-        }
-        .logoffButton:hover {
-            background:linear-gradient(to bottom, #e4685d 5%, #fc8d83 100%);
-            background-color:#e4685d;
-        }
-        .logoffButton:active {
-            position:relative;
-            top:1px;
-        }
-
-    </style>
-    <script>
-        $(document).ready(function(){
-            $('[data-toggle="tooltip"]').tooltip();   
-        });
-    </script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 	<?php
@@ -195,15 +105,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                 echo "<tbody>";
                                 while($row = $result->fetch_array()){
 									$tempQuant = $row['Quantity'];
+                                    $tempName = $row['ProdName'];
+                                    $tempPrice = $row['RetailPrice'];
+                                    $tempID = $row['ProdID'];
                                     echo "<tr>";
                                         echo "<td>" . $row['ProdName'] . "</td>";
                                         echo "<td> £" . number_format((float)$row['RetailPrice'], 2, '.', '') . "</td>";                                        
 										echo "<td>";
 											echo "<form name = basketAdd method=post>
-												<input type=number min=1 max=" . $tempQuant . " name=quant class=form-control required>
-												<input type=hidden name=productID value=" . $row['ProdID'] . " >
-                                                <input type=hidden name=productName value=" . $row['ProdName'] . " >
-                                                <input type=hidden name=productPrice value=" . $row['RetailPrice'] . " >
+												<input type=number min=1 max='$tempQuant' name=quant class=form-control required>
+												<input type=hidden name=productID value='$tempID' >
+                                                <input type=hidden name=productName value='$tempName'>
+                                                <input type=hidden name=productPrice value='$tempPrice'>
 												<button type=submit name=addToBasket>Add to basket</button>
 												</form>";
                                         echo "</td>";

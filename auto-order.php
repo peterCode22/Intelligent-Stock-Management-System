@@ -1,4 +1,6 @@
 <?php
+
+require_once "loader.php";
 // Initialize the session
 session_start();
  
@@ -16,9 +18,7 @@ if(!isset($_SESSION["acc_type"]) || $_SESSION["acc_type"] !== 'admin'){
     exit;
 }
 
-$_SESSION['adminOrder'] = array();
-$_SESSION['orderValue'] = 0;
-
+$_SESSION['adminBasket'] = new Basket();
 
 // Attempt select query execution
 $sql = "SELECT ProdID, ProdName, SupplierPrice FROM products";
@@ -33,14 +33,11 @@ if($result = $mysqli->query($sql)){
             $tempPred = $prediction[$tempID];
 
             if ($tempPred > 0) {
-                $newOrderEntry = array(
-                    'ProdID'=>intval($tempID),
-                    'ProdName'=>$row['ProdName'],
-                    'Quantity'=>intval($tempPred),
-                    'Price'=>floatval($row['SupplierPrice']),
-                    'Value'=>floatval($row['SupplierPrice']) * $tempPred);
-                $_SESSION['adminOrder'][] = $newOrderEntry;
-                $_SESSION['orderValue'] += $newOrderEntry['Value'];
+                $pid = intval($tempID);
+                $name = $row['ProdName'];
+                $quantity = intval($tempPred);
+                $price = floatval($row['SupplierPrice']);
+                $_SESSION['adminBasket']->addItem($pid, $name, $price, $quantity);
             }
         }   
         $result->free();
@@ -51,7 +48,7 @@ if($result = $mysqli->query($sql)){
     echo "Oops! Something went wrong. Please try again later.";
 }
 
-if (empty($_SESSION['adminOrder'])){
+if (empty($_SESSION['adminBasket']->getContent())){
     $_SESSION['noSugg'] = True;
     header("location: stock-order.php");
     exit;

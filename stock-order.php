@@ -1,4 +1,6 @@
 <?php
+
+require_once "loader.php";
 // Initialize the session
 session_start();
  
@@ -28,28 +30,19 @@ if(isset($_SESSION['noSugg'])){
 
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
-    $_POST['productID'] = intval($_POST['productID']);
-    $_POST['quant'] = intval($_POST['quant']);
-    $_POST['productPrice'] = floatval($_POST['productPrice']);
-    $searched = $_POST['productID'];
-    if (!isset($_SESSION['adminOrder'])){
-        $_SESSION['adminOrder'] = array();
-        $_SESSION['orderValue'] = 0;
+    $pid = intval($_POST['productID']);
+    $name = $_POST['productName'];
+    $quantity = intval($_POST['quant']);
+    $price = floatval($_POST['productPrice']);
+
+    if (!isset($_SESSION['adminBasket'])){
+        $_SESSION['adminBasket'] = new Basket();
     }
-    $key = array_search($searched, array_column($_SESSION['adminOrder'], 'ProdID'));
-    if ($key === false){
-        $newOrderEntry = array(
-            'ProdID'=>$_POST['productID'],
-            'ProdName'=>$_POST['productName'],
-            'Quantity'=>$_POST['quant'],
-            'Price'=>$_POST['productPrice'],
-            'Value'=>$_POST['productPrice'] * $_POST['quant']);
-        $_SESSION['adminOrder'][] = $newOrderEntry;
-        $_SESSION['orderValue'] += $newOrderEntry['Value'];
+
+    if ($_SESSION['adminBasket']->itemExists($pid)){
+        $_SESSION['adminBasket']->addQuantity($pid, $quantity);
     } else{
-        $_SESSION['adminOrder'][$key]['Quantity'] += $_POST['quant'];
-        $_SESSION['adminOrder'][$key]['Value'] = $_SESSION['adminOrder'][$key]['Quantity'] * $_SESSION['adminOrder'][$key]['Price'];
-        $_SESSION['orderValue'] += $newOrderEntry['Value'];
+        $_SESSION['adminBasket']->addItem($pid, $name, $price, $quantity);
     }
 	//Check if the user is already logged in, if no then redirect to login page
 	if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
@@ -70,79 +63,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <title>Order stock</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-<style>
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.topnav {
-  overflow: hidden;
-  background-color: #333;
-}
-
-.topnav a {
-  float: left;
-  color: #f2f2f2;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
-}
-
-.topnav a:hover {
-  background-color: #ddd;
-  color: black;
-}
-
-.topnav a.active {
-  background-color: #04AA6D;
-  color: white;
-}
-
-.loginButton {
-    box-shadow:inset 0px 1px 0px 0px #54a3f7;
-    background:linear-gradient(to bottom, #007dc1 5%, #0061a7 100%);
-    background-color:#007dc1;
-    border-radius:6px;
-    border:1px solid #124d77;
-    display:inline-block;
-    cursor:pointer;
-    color:#ffffff;
-    font-family:Arial;
-    font-size:15px;
-    padding:6px 24px;
-    text-decoration:none;
-    text-shadow:0px 1px 0px #154682;
-}
-.loginButton:hover {
-    background:linear-gradient(to bottom, #0061a7 5%, #007dc1 100%);
-    background-color:#0061a7;
-}
-.loginButton:active {
-    position:relative;
-    top:1px;
-}
-
-a[id='adminOrder'] {
-	font-size: 30px;
-	position:absolute;
-	top:0;
-	right:0;
-	margin-right: 20px;
-	margin-top: 10px;
-}
-
-a[id='autoOrder'] {
-	font-size: 30px;
-	position:absolute;
-	top:0;
-	left:0;
-	margin-left: 20px;
-	margin-top: 10px;
-}
-
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 

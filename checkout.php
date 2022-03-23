@@ -1,9 +1,13 @@
 <?php
-// Initialize the session
-session_start();
 
 // Include config file
 require_once "config.php";
+
+require_once "loader.php";
+
+// Initialize the session
+session_start();
+
  
 // Check if the user is logged in, if not then redirect him to login page
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
@@ -22,20 +26,15 @@ if(!isset($_SESSION['basket'])){
     exit;
 }
 
-if($_SESSION['basketValue'] == 0){
-    header("location: index.php");
-    exit;
-}
-
 //Check if there is enough products to be sold
 $quantSQL = "SELECT ProdID, Quantity FROM customer_product_view WHERE ProdID = ?";
-foreach ($_SESSION['basket'] as $item){
+foreach ($_SESSION['basket']->getContent as $item){
     if ($stmt = $mysqli->prepare($quantSQL)){
         $stmt->bind_param("i", $item['ProdID']);
         if ($stmt->execute()){
             $result = $stmt->get_result();
             $currProd = $result->fetch_array(MYSQLI_ASSOC);
-            if ($item['Quantity'] > $currProd['Quantity']){ //if there is not enough product in stock
+            if ($item->getQuantity() > $currProd['Quantity']){ //if there is not enough product in stock
                 //throw error
                 header("location: index.php");
                 exit();
@@ -59,10 +58,10 @@ if($stmt = $mysqli->prepare($sql)){
         //throw error
     }
     $orderID = $stmt->insert_id;
-    foreach ($_SESSION['basket'] as $data) {
+    foreach ($_SESSION['basket'] as $item) {
         $interSql = "INSERT INTO order_products VALUES (?,?,?)";
         $stmt = $mysqli->prepare($interSql);
-        $stmt->bind_param("iii", $orderID, $data['ProdID'], $data['Quantity']);
+        $stmt->bind_param("iii", $orderID, $item->getID(), $item->getQuantity());
         if (!$stmt->execute()){ //unsuccessful insertion into order_products
             //throw error
         }
@@ -75,10 +74,10 @@ $sqlGetBatches = "SELECT BatchID, ProdID, Quantity FROM batches WHERE ProdID = ?
 
 foreach ($_SESSION['basket'] as $item){
     if ($stmt = $mysqli->prepare($sqlGetBatches)){
-        $stmt->bind_param("i", $item['ProdID']);
+        $stmt->bind_param("i", $item->getID());
         if($stmt->execute()){
             $result = $stmt->get_result();
-            $quantToSell = $item['Quantity'];
+            $quantToSell = $item->getQuantity();
             while ($quantToSell > 0 && $currRow = $result->fetch_array()){
                 if ($currRow['Quantity'] > $quantToSell){
                     $newQuant = $currRow['Quantity'] - $quantToSell;
@@ -108,7 +107,7 @@ $today = date('Y-m-d');
 $sqlSales = "CALL record_sale(?, ?, ?)";
 foreach ($_SESSION['basket'] as $item){
     if ($stmt = $mysqli->prepare($sqlSales)){
-        $stmt->bind_param("isi", $item['ProdID'], $today, $item['Quantity']);
+        $stmt->bind_param("isi", $item->getID(), $today, $item->getQuantity());
         if($stmt->execute()){
             //Sale recorded
             
@@ -124,9 +123,7 @@ foreach ($_SESSION['basket'] as $item){
 
 echo 'passed';
 
-
-$_SESSION['basket'] = array();
-$_SESSION['basketValue'] = 0;
+unset($_SESSION['basket']);
 $_SESSION['orderPlaced'] = True;
 header("location: index.php");
 exit();

@@ -1,9 +1,13 @@
 <?php
+
+// Include database config file
+require_once "config.php";
+
+require_once "loader.php";
+
 // Initialize the session
 session_start();
- 
-// Include config file
-require_once "config.php";
+
 
 if(isset($_SESSION['orderPlaced'])){
     $message = "Order placed successfully!";
@@ -13,28 +17,20 @@ if(isset($_SESSION['orderPlaced'])){
 
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
-    $_POST['productID'] = intval($_POST['productID']);
-    $_POST['quant'] = intval($_POST['quant']);
-    $_POST['productPrice'] = floatval($_POST['productPrice']);
-    $searched = $_POST['productID'];
+    $pid = intval($_POST['productID']);
+    echo $_POST['productName'];
+    $name = $_POST['productName'];
+    $quantity = intval($_POST['quant']);
+    $price = floatval($_POST['productPrice']);
+
     if (!isset($_SESSION['basket'])){
-        $_SESSION['basket'] = array();
-        $_SESSION['basketValue'] = 0;
+        $_SESSION['basket'] = new Basket();
     }
-    $key = array_search($searched, array_column($_SESSION['basket'], 'ProdID'));
-    if ($key === false){
-        $newBasketEntry = array(
-            'ProdID'=>$_POST['productID'],
-            'ProdName'=>$_POST['productName'],
-            'Quantity'=>$_POST['quant'],
-            'Price'=>$_POST['productPrice'],
-            'Value'=>$_POST['productPrice'] * $_POST['quant']);
-        $_SESSION['basket'][] = $newBasketEntry;
-        $_SESSION['basketValue'] += $newBasketEntry['Value'];
+
+    if ($_SESSION['basket']->itemExists($pid)){
+        $_SESSION['basket']->addQuantity($pid, $quantity);
     } else{
-        $_SESSION['basket'][$key]['Quantity'] += $_POST['quant'];
-        $_SESSION['basket'][$key]['Value'] = $_SESSION['basket'][$key]['Quantity'] * $_SESSION['basket'][$key]['Price'];
-        $_SESSION['basketValue'] += $newBasketEntry['Value'];
+        $_SESSION['basket']->addItem($pid, $name, $price, $quantity);
     }
 	//Check if the user is already logged in, if no then redirect to login page
 	if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
@@ -195,15 +191,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                 echo "<tbody>";
                                 while($row = $result->fetch_array()){
 									$tempQuant = $row['Quantity'];
+                                    $tempName = $row['ProdName'];
+                                    $tempPrice = $row['RetailPrice'];
+                                    $tempID = $row['ProdID'];
                                     echo "<tr>";
                                         echo "<td>" . $row['ProdName'] . "</td>";
                                         echo "<td> £" . number_format((float)$row['RetailPrice'], 2, '.', '') . "</td>";                                        
 										echo "<td>";
 											echo "<form name = basketAdd method=post>
-												<input type=number min=1 max=" . $tempQuant . " name=quant class=form-control required>
-												<input type=hidden name=productID value=" . $row['ProdID'] . " >
-                                                <input type=hidden name=productName value=" . $row['ProdName'] . " >
-                                                <input type=hidden name=productPrice value=" . $row['RetailPrice'] . " >
+												<input type=number min=1 max='$tempQuant' name=quant class=form-control required>
+												<input type=hidden name=productID value='$tempID' >
+                                                <input type=hidden name=productName value='$tempName'>
+                                                <input type=hidden name=productPrice value='$tempPrice'>
 												<button type=submit name=addToBasket>Add to basket</button>
 												</form>";
                                         echo "</td>";

@@ -68,6 +68,8 @@ if($stmt = $mysqli->prepare($sql)){
     }
 }
 
+
+//Deduct the sale from current stock levels
 $sqlBatchUpd = "UPDATE batches SET Quantity=? WHERE BatchID=?";
 $sqlBatchDel = "DELETE FROM batches WHERE BatchID = ?";
 $sqlGetBatches = "SELECT BatchID, ProdID, Quantity FROM batches WHERE ProdID = ?";
@@ -102,7 +104,7 @@ foreach ($_SESSION['basket'] as $item){
 
 }
 
-//record sales
+//Record sales
 $today = date('Y-m-d');
 $sqlSales = "CALL record_sale(?, ?, ?)";
 foreach ($_SESSION['basket'] as $item){
@@ -120,8 +122,6 @@ foreach ($_SESSION['basket'] as $item){
         //error
     }
 }
-
-echo 'passed';
 
 unset($_SESSION['basket']);
 $_SESSION['orderPlaced'] = True;

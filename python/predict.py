@@ -1,3 +1,7 @@
+#This script checks current products in the database, and shapes the
+#fetched data along with date information and feeds it to the trained
+#prediction model and stores the prediction in the database.
+
 import mysql.connector as dbCon
 import pandas as pd
 import numpy as np
@@ -35,22 +39,28 @@ endDate = tomorrowDate + datetime.timedelta(days = timePeriod)
 
 dateRange = pd.date_range(tomorrowDate, endDate)
 
+#Load neural network model and scalers
 NN = load(open("python/model.pkl",'rb'))
 scalerX = load(open("python/scalerX.pkl", 'rb'))
 scalerY = load(open("python/scalerY.pkl", 'rb'))
 
+#Store input data for the ML model in an array of tuples
 inputData = []
 for date in dateRange:
     for elem in prodResult:
         tempTup = elem + (date.weekday(), date.day, date.date())
         inputData.append(tempTup)
 
+#Convert the input array to a dataframe
 DF = pd.DataFrame(inputData, columns=['Product', 'Price', 'WeekDay', 'MonthDay', 'Date'])
 inputDF = DF[['Product', 'Price', 'WeekDay', 'MonthDay']]
 
 X = scalerX.transform(inputDF)
 
 prediction = NN.predict(X)
+
+#The prediction is scaled using Standard Scaler
+#so it needs to be "unscaled" back to original form
 prediction = prediction.reshape(-1,1)
 prediction = scalerY.inverse_transform(prediction)
 
@@ -60,6 +70,7 @@ fullDF['Prediction'] = np.ceil(prediction)
 #Go through all products
 allProducts = prodDF['Product']
 
+#Function that stores predictions in the database
 def predictInDB():
     dbCursor = conn.cursor()
     salesSQL = 'INSERT INTO sales (DayT, ProductID, Predicted) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE Predicted = %s'

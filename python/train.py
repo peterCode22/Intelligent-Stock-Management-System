@@ -1,3 +1,6 @@
+#This script takes sales data from given time period and
+#uses it to train the ML model
+
 import sys
 import mysql.connector as dbCon
 import pandas as pd
@@ -30,6 +33,7 @@ xSalesDF['Price'] = salesDF['Price']
 xSalesDF['WeekDay'] = pd.to_datetime(salesDF['Date']).dt.dayofweek
 xSalesDF['MonthDay'] = pd.to_datetime(salesDF['Date']).dt.day
 
+#Data preprocessing
 from sklearn.preprocessing import StandardScaler
 scalerX = StandardScaler()
 scalerY = StandardScaler()

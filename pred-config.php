@@ -25,7 +25,7 @@ if($result = $mysqli->query($sql)){
     }
 }
 
-
+//Store configuration settings in trainConfig.json
 if($_SERVER['REQUEST_METHOD'] == "POST"){
     $jsonString = file_get_contents('python/trainConfig.json');
     $data = json_decode($jsonString, true);

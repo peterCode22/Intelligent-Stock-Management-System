@@ -16,7 +16,7 @@ if($_SESSION["acc_type"] !== 'admin'){
     exit;
 }
 
-// Processing form data when form is submitted
+// Processing basket form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
     if(isset($_POST['newQuant'])){
         $newQuant = $_POST['newQuant'];
@@ -29,8 +29,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         }
     }
 }
-
-
 
 ?>
  
@@ -94,9 +92,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         echo "</tbody>";
                     echo "</table>";
                     echo '<h2>Order total value: <br> £' . number_format((float)$_SESSION['adminBasket']->getValue(), 2, '.', '') . '</h2>';
-                    echo '<a href="place-order.php" id = "placeOrder">
-                        <button class="placeButton">Place order</button> 
-                        </a><br>';
+                    echo '<a href="place-order.php" id = "placeOrder" class="placeButton">Place order</a><br><br>';
                 }
                 else{
                     echo '<h1>There are currently no items on your order.</h1>';
@@ -105,9 +101,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             else{
                 echo '<h1>There are currently no items on your order.</h1>';
             }
-            echo '<a href="stock-order.php" id = "return">
-            <button class="returnButton">Return</button> 
-            </a>';
+            echo '<a href="stock-order.php" id = "return" class="returnButton">Return</a>';
         ?>
 
     

@@ -47,9 +47,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         echo '<a href="index.php" id = "return">
             <button class="returnButton">Return</button> 
             </a>';
-		echo '<a href="logout.php" id = "logout">
-            <button class="logoffButton">Log out</button> 
-            </a>';
     ?>
     <h1 class="my-5">Hi, <b><?php echo htmlspecialchars($_SESSION["username"]); ?></b>.
         <?php 

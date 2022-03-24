@@ -75,6 +75,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <a class="active" href="stock-order.php">Order stock</a>
     <a href="pred-config.php">Prediction settings</a>
 </div>
+
+<a href= "admin-order.php" id = "adminOrder" class= "loginButton" >Order summary</a>
+<a href= "auto-order.php" id = "autoOrder" class= "loginButton" >Suggested Order</a>
+<br>
+<h2 class="mt-5">Place an order.</h2>
+<p>Please fill this form and submit to order stock.</p>
 <div class="wrapper">
         <div class="container-fluid">
             <div class="row">
@@ -83,15 +89,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     <?php
                     // Include config file
                     require_once "config.php";
-                    echo '<a href="admin-order.php" id = "adminOrder">
-                        <button class="loginButton">Order summary</button> 
-                        </a>';
-                    echo '<a href="auto-order.php" id = "autoOrder">
-                        <button class="loginButton">Suggested order</button> 
-                        </a>';
-                    echo '<br>';
-                    echo '<h2 class="mt-5">Place an order.</h2>
-                    <p>Please fill this form and submit to order stock.</p>';
 
                     // Attempt select query execution
                     $sql = "SELECT * FROM products";

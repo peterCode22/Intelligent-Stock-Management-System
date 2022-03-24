@@ -1,3 +1,9 @@
+#This script returns a json file which has ProductID : Quantity Difference pairs
+#The quantity difference is based on predicted quantity for preconfigured time period
+#(which is specified in trainConfig.json) and current quantity of said product
+#For example if predicted quantity sold for ProductID = 1 should be 100 in
+#said time period and current quantity is 90, the json entry will be '1': '10'
+
 from time import time
 import mysql.connector as dbCon
 import pandas as pd
@@ -17,7 +23,8 @@ if config['delivery'] == 'weekly':
     timePeriod = 6
 else:
     timePeriod = 29
-#Date
+
+#Dates
 tomorrowDate = datetime.datetime.today().date() + datetime.timedelta(days=1)
 endDate = tomorrowDate + datetime.timedelta(days = timePeriod)
 startDate = tomorrowDate.strftime('%Y-%m-%d') 
@@ -37,9 +44,11 @@ batchCursor.execute(batchSQL)
 batchResult = batchCursor.fetchall()
 batchCursor.close()
 
+#Store sql returns in pandas dataframe
 prodDF = pd.DataFrame(prodResult, columns=['Product', 'RPrice'])
 batchDF = pd.DataFrame(batchResult, columns=['BatchID', 'ProdID', 'Quantity', 'Name'])
 
+#Sum up the quantity of each product
 currData = batchDF.groupby('ProdID')['Quantity'].sum().reset_index()
 
 #Go through all products
@@ -57,8 +66,11 @@ conn.close()
 
 salesDB = pd.DataFrame(salesResult, columns=['Date', 'Product', 'Predicted'])
 
+#Daily sum of each product's predicted quantity
 predictionDB = salesDB.groupby('Product')['Predicted'].sum().reset_index()
 
+#Compare daily predicted quantity with actual
+#store the difference in diffProd dictionary
 for prod in allProducts:
     desiredQuantity = predictionDB[predictionDB['Product'] == prod]['Predicted'].values[0]
     if any(currData.ProdID == prod):

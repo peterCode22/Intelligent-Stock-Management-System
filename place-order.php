@@ -28,10 +28,7 @@ if(!isset($_SESSION['adminBasket'])){
 $orderTime = date('Y-m-d H:i:s'); 
 $sql = "INSERT INTO supplier_orders (DTime, managerID) VALUES (?,?)";
 if($stmt = $mysqli->prepare($sql)){
-    // Bind variables to the prepared statement as parameters
     $stmt->bind_param("si", $orderTime, $_SESSION['id']);
-    
-    // Attempt to execute the prepared statement
     $stmt->execute();
     $orderID = $stmt->insert_id;
     foreach ($_SESSION['adminBasket']->getContent() as $item) {

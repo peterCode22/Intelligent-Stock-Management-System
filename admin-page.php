@@ -21,18 +21,14 @@ if(!isset($_SESSION["acc_type"]) || $_SESSION["acc_type"] !== 'admin'){
 $tomorrow = new DateTime('tomorrow');
 $predSQL = "SELECT Predicted FROM sales WHERE DayT = ?";
 if($stmt = $mysqli->prepare($predSQL)){
-    // Bind variables to the prepared statement as parameters
     $stmt->bind_param("s", $tmrStr);
     $tmrStr = $tomorrow->format('Y-m-d');
-    // Attempt to execute the prepared statement
     if($stmt->execute()){
-        // Records created successfully. Redirect to landing page
         $result = $stmt->get_result();
-              
         if($result->num_rows == 0){ //Prediction period has passed
             shell_exec('python python/predict.py');
             $accurate = shell_exec('python python/test.py');
-            if ($accurate[0] == 0){
+            if ($accurate[0] == 0){ //model was too inaccurate in last period
                 $message = "Last prediction period has exceeded inaccuracy threshold. Model re-training recommended!";
                 echo "<script type='text/javascript'>alert('$message');</script>";
             }

@@ -66,14 +66,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <body>
 	<?php
 	if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
-		echo '<a href="login.php" id = "login">
-            <button class="loginButton">Login</button> 
-            </a>';
+		echo '<a href="login.php" id = "login" class="loginButton">Login</a>';
 	}
 	else{
-		echo '<a href="logout.php" id = "logout">
-            <button class="logoffButton">Log out</button> 
-            </a>';
+		echo '<a href="logout.php" id = "logout" class="logoutButton">Log out</a>';
 	}
 	echo '<a href="basket.php" id = "basket">
             <button class="loginButton">Basket</button> 

@@ -1,3 +1,6 @@
+#This script assesses the models accuracy in last date period
+#which is predefined in trainConfig.json
+
 from time import time
 import mysql.connector as dbCon
 import pandas as pd
@@ -25,6 +28,7 @@ today = datetime.datetime.today().date()
 startDate = today - datetime.timedelta(days = timePeriod)
 endDate = today
 
+#Fetch database data of sold and predicted quantity of products
 salesSQL = "SELECT Quantity, Predicted FROM sales WHERE (Predicted IS NOT NULL) AND (DayT BETWEEN %s AND %s)"
 param = (startDate, endDate)
 salesCursor = conn.cursor()
@@ -36,6 +40,7 @@ salesDB = pd.DataFrame(salesResult, columns=['Quantity', 'Predicted'])
 
 err = mean_squared_error(salesDB['Quantity'], salesDB['Predicted'])
 
+#Compare MSE to the specified maximum MSE level
 if err > config['MSE']:
     print (0)
 else:

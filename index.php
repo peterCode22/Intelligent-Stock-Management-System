@@ -71,9 +71,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	else{
 		echo '<a href="logout.php" id = "logout" class="logoutButton">Log out</a>';
 	}
-	echo '<a href="basket.php" id = "basket">
-            <button class="loginButton">Basket</button> 
-            </a>';
+	echo '<a href="basket.php" id = "basket" class="loginButton">Basket</a>';
+    
     ?>
     <div class="wrapper">
         <div class="container-fluid">

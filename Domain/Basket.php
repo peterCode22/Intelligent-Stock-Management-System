@@ -13,34 +13,7 @@ class Basket{
     }
 
     //Methods
-    public function addItem($id, $name, $price, $quantity){
-        $item = new Item($id, $name, $price, $quantity);
-        $this->content[$item->getID()] = $item;
-        $this->updateValue();
-    }
-
-    public function removeItem($id){
-        if (isset($this->content[$id])){
-            unset($this->content[$id]);
-            $this->updateValue();
-        } else{
-            //Invalid ID
-        }
-    }
-
-    private function updateValue(){
-        $totalVal = 0;
-        foreach ($this->content as $item){
-            $currVal = $item->getValue();
-            $totalVal += $currVal;
-        }
-        $this->setValue($totalVal);
-    }
-
-    private function setValue($val){
-        $this->basketValue = $val;
-    }
-
+    //Public
     public function getContent(){
         return $this->content;
     }
@@ -75,6 +48,35 @@ class Basket{
         } else{
             //Invalid ID
         }
+    }
+
+    public function addItem($id, $name, $price, $quantity){
+        $item = new Item($id, $name, $price, $quantity);
+        $this->content[$item->getID()] = $item;
+        $this->updateValue();
+    }
+
+    public function removeItem($id){
+        if (isset($this->content[$id])){
+            unset($this->content[$id]);
+            $this->updateValue();
+        } else{
+            //Invalid ID
+        }
+    }
+
+    //Private
+    private function updateValue(){
+        $totalVal = 0;
+        foreach ($this->content as $item){
+            $currVal = $item->getValue();
+            $totalVal += $currVal;
+        }
+        $this->setValue($totalVal);
+    }
+
+    private function setValue($val){
+        $this->basketValue = $val;
     }
     
 }

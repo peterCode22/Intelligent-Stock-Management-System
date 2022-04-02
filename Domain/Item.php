@@ -17,6 +17,7 @@ class Item{
     }
 
     //Methods
+    //Public:
     public function getID(){
         return $this->id;
     }
@@ -37,6 +38,12 @@ class Item{
         return $this->itemValue;
     }
 
+    public function setQuantity($quantity){
+        $this->quantity = $quantity;
+        $this->updateValue();
+    }
+
+    //Private
     private function setID($id){
         $this->id = $id;
     }
@@ -51,11 +58,6 @@ class Item{
 
     private function setValue($val){
         $this->itemValue = $val;
-    }
-
-    public function setQuantity($quantity){
-        $this->quantity = $quantity;
-        $this->updateValue();
     }
 
     private function updateValue(){

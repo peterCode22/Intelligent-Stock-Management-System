@@ -41,9 +41,6 @@ foreach ($_SESSION['basket']->getContent as $item){
             }
         }
     }
-    
-        
-
 }
 
 //Record a customer order
@@ -112,7 +109,6 @@ foreach ($_SESSION['basket'] as $item){
         $stmt->bind_param("isi", $item->getID(), $today, $item->getQuantity());
         if($stmt->execute()){
             //Sale recorded
-            
         }
         else{
             //error

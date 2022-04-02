@@ -89,6 +89,7 @@ if bool(argDict['month']): #month
             table = dailyDF
             if dailyPredictionMoneyDF is not None:
                 table = pd.merge(table, dailyPredictionMoneyDF, how='outer')
+                #Create a row with % comparison of prediction vs actual sales
                 for row in range(0, table.shape[0]):
                     if table.iloc[row]['PredValue'] != 0 and table.iloc[row]['Value'] != 0:
                         table.loc[[row],['Prediction vs. Actual']] = str(round((table.iloc[row]['PredValue'] - table.iloc[row]['Value']) / table.iloc[row]['PredValue'] * 100, 2)) + '%'
@@ -98,6 +99,7 @@ if bool(argDict['month']): #month
                 table = pd.merge(table, dailyPreviousMoneyDF, how='outer')
                 table['PrevValue'] = table['PrevValue'].astype(float)
                 table['Value'] = table['Value'].astype(float)
+                #Create a row with % comparison of prediction vs actual sales
                 for row in range(0, table.shape[0]):
                     if table.iloc[row]['PrevValue'] != 0 and table.iloc[row]['Value'] != 0:
                         table.loc[[row],['Current vs. Last Month']] = str(round((table.iloc[row]['Value'] - table.iloc[row]['PrevValue']) / table.iloc[row]['Value'] * 100, 2)) + '%'

@@ -1,9 +1,9 @@
 <?php
 
 // Include database config file
-require_once "config.php";
+require_once "Config/config.php";
 
-require_once "loader.php";
+require_once "Config/loader.php";
 
 // Initialize the session
 session_start();
@@ -17,7 +17,7 @@ if(isset($_SESSION['orderPlaced'])){
 
 if(isset($_SESSION['acc_type'])){
     if($_SESSION["acc_type"] !== 'customer'){
-        header("location: admin-page.php");
+        header("location: Views/Admin/admin-page.php");
         exit;
     }
 }
@@ -40,11 +40,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     }
 	//Check if the user is already logged in, if no then redirect to login page
 	if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
-		header("location: login.php");
+		header("location: Actions/login.php");
 		exit;
 	}
 	else{
-		header("location: basket.php");
+		header("location: Views/Customer/basket.php");
 		exit;
 	}
 }
@@ -66,12 +66,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <body>
 	<?php
 	if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
-		echo '<a href="login.php" id = "login" class="loginButton">Login</a>';
+		echo '<a href="Actions/login.php" id = "login" class="loginButton">Login</a>';
 	}
 	else{
-		echo '<a href="logout.php" id = "logout" class="logoutButton">Log out</a>';
+		echo '<a href="Actions/logout.php" id = "logout" class="logoutButton">Log out</a>';
 	}
-	echo '<a href="basket.php" id = "basket" class="loginButton">Basket</a>';
+	echo '<a href="Views/Customer/basket.php" id = "basket" class="loginButton">Basket</a>';
     
     ?>
     <div class="wrapper">
@@ -84,7 +84,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 					
                     <?php
                     // Include config file
-                    require_once "config.php";
+                    require_once "Config/config.php";
                     
                     // Attempt select query execution
                     $sql = "SELECT * FROM customer_product_view WHERE Quantity > 0";

@@ -1,5 +1,5 @@
 <?php
-require_once '../Config/loader.php';
+require_once 'Item.php';
 
 class Basket{
     //Properties

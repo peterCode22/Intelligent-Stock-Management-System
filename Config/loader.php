@@ -1,7 +1,7 @@
 <?php
 
 function load_class($className){
-    $path = '../Domain/' . $className . '.php';
+    $path = $_SERVER['DOCUMENT_ROOT'] . '/dsp/Domain/' . $className . '.php';
 
     if(file_exists($path)){
         require_once $path;

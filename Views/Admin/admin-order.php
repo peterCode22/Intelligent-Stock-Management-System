@@ -92,7 +92,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         echo "</tbody>";
                     echo "</table>";
                     echo '<h2>Order total value: <br> £' . number_format((float)$_SESSION['adminBasket']->getValue(), 2, '.', '') . '</h2>';
-                    echo '<a href="place-order.php" id = "placeOrder" class="placeButton">Place order</a><br><br>';
+                    echo '<a href="../../Actions/Admin/place-order.php" id = "placeOrder" class="placeButton">Place order</a><br><br>';
                 }
                 else{
                     echo '<h1>There are currently no items on your order.</h1>';

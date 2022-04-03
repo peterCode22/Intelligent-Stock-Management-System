@@ -1,0 +1,21 @@
+#1 index and style files could go to folder Views (just there no subfolder)
+#2 Get rid off all the comments and instead make private functions that will say what code is doing and would allow reader to follow the flow of the code.
+for example:
+
+// Check if the user is already logged in, if yes then redirect him to welcome page
+if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true)
+
+instead of that check create private method "IsUserLoggedIn" and change the if to
+
+if (IsUserLoggedIn()) and get rid of the comment - if needed pass params to the method.
+
+This example, but its about all the files.
+
+I mean you could leave some comments if they are desribing hard to understand algorith, but when you can change them to private method desribing behaviour than they should be removed.
+
+#3 refactor big if with a lot of indentation levels, as for now code in login.php is not really readable.
+Starting from
+"if($_SERVER["REQUEST_METHOD"] == "POST"){"
+code below could be refactored to smaller pieces methods to make it more readable.
+
+#4 not sure if its possible, but it would good to have all sql related code in single file and that reference it reuse from rest of the files.

@@ -11,6 +11,8 @@ if (IsUserLoggedIn()) and get rid of the comment - if needed pass params to the 
 
 This example, but its about all the files.
 
+I mean you could leave some comments if they are desribing hard to understand algorith, but when you can change them to private method desribing behaviour than they should be removed.
+
 #3 refactor big if with a lot of indentation levels, as for now code in login.php is not really readable.
 Starting from
 "if($_SERVER["REQUEST_METHOD"] == "POST"){"

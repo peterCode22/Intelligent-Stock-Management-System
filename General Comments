@@ -15,3 +15,5 @@ This example, but its about all the files.
 Starting from
 "if($_SERVER["REQUEST_METHOD"] == "POST"){"
 code below could be refactored to smaller pieces methods to make it more readable.
+
+#4 not sure if its possible, but it would good to have all sql related code in single file and that reference it reuse from rest of the files.

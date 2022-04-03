@@ -10,3 +10,8 @@ instead of that check create private method "IsUserLoggedIn" and change the if t
 if (IsUserLoggedIn()) and get rid of the comment - if needed pass params to the method.
 
 This example, but its about all the files.
+
+#3 refactor big if with a lot of indentation levels, as for now code in login.php is not really readable.
+Starting from
+"if($_SERVER["REQUEST_METHOD"] == "POST"){"
+code below could be refactored to smaller pieces methods to make it more readable.

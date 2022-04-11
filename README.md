@@ -3,7 +3,7 @@
 2. Open MySQL Workbench and connect to localhost
 3. Go to Server/Data Import
 4. Import from Self-Contained File
-5. Choose Dump.sql from Data persistance folder.
+5. Choose Dump.sql from DataPersistance folder.
 6. Ensure Dump Structure and Data is selected
 7. Start import
 8. Go to projects Config/config.php

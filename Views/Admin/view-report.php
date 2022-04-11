@@ -53,11 +53,10 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
 
         $output = shell_exec("python ../../MachineLearning/generateReport.py " . json_encode(json_encode($pyArgv)));
         //}
-        echo json_encode($pyArgv);
     }
     else{ //form submitted with missing fields
-        //header("location: reports.php");
-        //exit;
+        header("location: reports.php");
+        exit;
     }
 }
 else{ //no form submitted

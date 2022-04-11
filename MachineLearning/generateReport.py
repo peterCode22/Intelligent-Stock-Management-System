@@ -16,6 +16,8 @@ import matplotlib.pyplot as plt
 import sys
 
 conn = dbCon.connect(host="localhost", user="root", password="cqX*5gk6^hvNFPvE", database="dsp")
+if len(sys.argv) != 2:
+    sys.exit(1)
 argDict = json.loads(sys.argv[1])
 if bool(argDict['month']): #month
     date = datetime.datetime.strptime(argDict['month'], '%Y-%m')

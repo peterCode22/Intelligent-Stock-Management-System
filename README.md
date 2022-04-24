@@ -1,4 +1,7 @@
-# Project setup
+# Description
+This project provides a web interface with two views: one for a customer to buy pre-defined goods, second for a manager to manage stock. The main merit of this project is the use of a Machine Learning algorithm to predict demand, which in turns allows the system to suggest an order to restock the supplies. The manager can also view various data statistics in either text or graphical form including sales. The Machine Learning algorithm automatically assesses itself by checking whether its accuracy has exceeded a desired threshold over a specified time period. The model used in this project was Multi-Layered Perceptron from sci-kit learn module in Python.
+
+# Setup
 1. Set up local MySQL Server
 2. Open MySQL Workbench and connect to localhost
 3. Go to Server/Data Import

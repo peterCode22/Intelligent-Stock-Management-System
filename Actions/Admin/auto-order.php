@@ -25,7 +25,11 @@ $sql = "SELECT ProdID, ProdName, SupplierPrice FROM products";
 
 $output = shell_exec("python ../../MachineLearning/suggestOrder.py");
 $prediction = json_decode($output, TRUE);
-
+echo var_dump($output);
+if (is_null($prediction)){
+    echo "No prediction in the database, contact administrator!";
+    exit();
+}
 //Populate the basket with products based on prediction stored
 //within the database
 if($result = $mysqli->query($sql)){

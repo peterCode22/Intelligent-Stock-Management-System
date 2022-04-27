@@ -47,7 +47,6 @@ batchCursor.close()
 #Store sql returns in pandas dataframe
 prodDF = pd.DataFrame(prodResult, columns=['Product', 'RPrice'])
 batchDF = pd.DataFrame(batchResult, columns=['BatchID', 'ProdID', 'Quantity', 'Name'])
-
 #Sum up the quantity of each product
 currData = batchDF.groupby('ProdID')['Quantity'].sum().reset_index()
 
@@ -65,10 +64,8 @@ salesCursor.close()
 conn.close()
 
 salesDB = pd.DataFrame(salesResult, columns=['Date', 'Product', 'Predicted'])
-
 #Daily sum of each product's predicted quantity
 predictionDB = salesDB.groupby('Product')['Predicted'].sum().reset_index()
-
 #Compare daily predicted quantity with actual
 #store the difference in diffProd dictionary
 for prod in allProducts:

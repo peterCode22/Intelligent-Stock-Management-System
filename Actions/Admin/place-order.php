@@ -33,9 +33,12 @@ if($stmt = $mysqli->prepare($sql)){
     $orderID = $stmt->insert_id;
     $tempBasket = $_SESSION['adminBasket']->getContent();
     foreach ($tempBasket as $item) {
+        $paramItemID = $item->getID();
+        $paramOrderID = $orderID;
+        $paramQuantity = $item->getQuantity();
         $interSql = "INSERT INTO batches (ProdID, SuppOrdID, Quantity) VALUES (?,?,?)";
         $stmt = $mysqli->prepare($interSql);
-        $stmt->bind_param("iii", $item->getID(), $orderID, $item->getQuantity());
+        $stmt->bind_param("iii", $paramItemID, $paramOrderID, $paramQuantity);
         $stmt->execute();
     }
     unset($_SESSION['adminBasket']);

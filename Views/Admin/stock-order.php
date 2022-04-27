@@ -109,13 +109,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                         echo "<td>" . $row['ProdName'] . "</td>";
                                         echo "<td> £" . number_format((float)$row['SupplierPrice'], 2, '.', '') . "</td>";                                        
 										echo "<td>";
-											echo "<form name = orderAdd method=post>
+											echo '<form name = orderAdd method=post>
 												<input type=number min=1 name=quant class=form-control required>
-												<input type=hidden name=productID value=" . $row['ProdID'] . " >
-                                                <input type=hidden name=productName value=" . $row['ProdName'] . " >
-                                                <input type=hidden name=productPrice value=" . $row['SupplierPrice'] . " >
+												<input type=hidden name=productID value="' . $row["ProdID"] . '" >
+                                                <input type=hidden name=productName value="' . $row["ProdName"] . '" >
+                                                <input type=hidden name=productPrice value="' . $row["SupplierPrice"] . '" >
 												<button type=submit name=addToOrder>Add to order</button>
-												</form>";
+												</form>';
                                         echo "</td>";
                                     echo "</tr>";
                                 }

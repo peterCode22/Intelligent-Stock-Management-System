@@ -41,8 +41,8 @@ dateRange = pd.date_range(tomorrowDate, endDate)
 
 #Load neural network model and scalers
 NN = load(open(os.path.dirname(__file__) + "/Models/model.pkl",'rb'))
-scalerX = load(open(os.path.dirname(__file__) + "Models/scalerX.pkl", 'rb'))
-scalerY = load(open(os.path.dirname(__file__) + "Models/scalerY.pkl", 'rb'))
+scalerX = load(open(os.path.dirname(__file__) + "/Models/scalerX.pkl", 'rb'))
+scalerY = load(open(os.path.dirname(__file__) + "/Models/scalerY.pkl", 'rb'))
 
 #Store input data for the ML model in an array of tuples
 inputData = []

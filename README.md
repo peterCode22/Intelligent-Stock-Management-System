@@ -14,7 +14,7 @@ Tests and Miscellaneous folder contains:
 6. Ensure Dump Structure and Data is selected
 7. Start import
 8. Go to projects Config/config.php
-9. Change the password you set during MySQL Server setup.
+9. Change the connection string to match your MySQL Server setup in this file as well as python files in MachineLearning.
 10. Set up wampserver on your machine.
 11. Move all project files to *INSTALLATION DRIVE*/wamp64/www/*project name*
 12. Start wampserver
